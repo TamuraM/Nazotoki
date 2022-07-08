@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>ボタンを作るスクリプト</summary>
+/// <summary>視点を変えるボタンを作るスクリプト</summary>
 public class ButtonManager : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField, Header("メインカメラ"), Tooltip("メインカメラオブジェクト")] Camera _mainCamera;
