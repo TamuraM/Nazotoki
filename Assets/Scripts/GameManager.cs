@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>ゲームマネージャー！！！！！！！！！</summary>
 public class GameManager : MonoBehaviour
 {
+    [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] Image _nazo;
     [SerializeField, Header("ライト1のMeshRenderer"), Tooltip("1つ目のライトのメッシュレンダラー")] MeshRenderer _light1;
     [SerializeField, Header("ライト2のMeshRenderer"), Tooltip("2つ目のライトのメッシュレンダラー")] MeshRenderer _light2;
     [SerializeField, Header("ライト3のMeshRenderer"), Tooltip("3つ目のライトのメッシュレンダラー")] MeshRenderer _light3;
@@ -38,6 +40,7 @@ public class GameManager : MonoBehaviour
         _clearState = Clear.ClearSitenaiMan;
         _lever.SetActive(false);
         _textBox.SetActive(false);
+        _nazo.enabled = false;
         Transfer();
     }
 
@@ -47,6 +50,7 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Mouse1))
         {
             Debug.Log(_clearState);
+            _nazo.enabled = true;
         }
 
         //全部の謎解いたら、ステータスが「すべての謎を解いた」になる
@@ -64,7 +68,16 @@ public class GameManager : MonoBehaviour
             Debug.Log(_hit.collider.gameObject.name);
 
             //左側にある謎解き　机の上の紙クリックして謎解いてなんかしたらレバー現れる
+            if (_hit.collider.gameObject.name == "Nazo")
+            {
+                Debug.Log("なぞだ");
 
+            }
+
+            if(_hit.collider.gameObject == _lever)
+            {
+                _clearState |= Clear.FirstStageClear;
+            }
 
             //背面にある謎解き　クリックした順番があってたらクリア
             //メインカメラからRayを飛ばして、オブジェクトを探す
@@ -95,15 +108,15 @@ public class GameManager : MonoBehaviour
 
             }
 
-            if(_hit.collider.gameObject.name == "Plane")
-            {
-                _clearState |= Clear.FirstStageClear;
-            }
+            //if(_hit.collider.gameObject.name == "Plane")
+            //{
+            //    _clearState |= Clear.FirstStageClear;
+            //}
 
-            if (_hit.collider.gameObject.name == "Monitor")
-            {
-                _clearState |= Clear.ThirdStageClear;
-            }
+            //if (_hit.collider.gameObject.name == "Monitor")
+            //{
+            //    _clearState |= Clear.ThirdStageClear;
+            //}
 
         }
 
