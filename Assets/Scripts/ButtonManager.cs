@@ -5,12 +5,15 @@ using UnityEngine.UI;
 /// <summary>視点を変えるボタンを作るスクリプト</summary>
 public class ButtonManager : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField, Header("メインカメラ"), Tooltip("メインカメラオブジェクト")] Camera _mainCamera;
+    [Tooltip("メインカメラオブジェクト")] GameObject _mainCamera;
+    [Tooltip("謎の後ろにあるパネル")] GameObject _nazoBackground;
     [Tooltip("これがついてるオブジェクトのイメージコンポーネント")] Image _image;
 
     private void Start()
     {
         _image = this.gameObject.GetComponent<Image>();
+        _nazoBackground = GameObject.Find("NazoBackground");
+        _mainCamera = GameObject.Find("Main Camera");
     }
 
     /// <summary>ボタンを押したらカメラが回る</summary>
@@ -22,10 +25,17 @@ public class ButtonManager : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         {
                 _mainCamera.transform.Rotate(0, -90, 0);
         }
+
         //右ボタン押したら右に回る
         if (this.gameObject.name == "RightButton")
         {
             _mainCamera.transform.Rotate(0, 90, 0);
+        }
+
+        //なぞをクリックしたときに戻るボタン押すとなぞ消える
+        if(this.gameObject.name == "ReturnButton")
+        {
+            _nazoBackground.SetActive(false);
         }
     }
 

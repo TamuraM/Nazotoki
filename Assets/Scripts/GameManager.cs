@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// <summary>ゲームマネージャー！！！！！！！！！</summary>
 public class GameManager : MonoBehaviour
 {
-    [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] Image _nazo;
+    [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
     [SerializeField, Header("ライト1のMeshRenderer"), Tooltip("1つ目のライトのメッシュレンダラー")] MeshRenderer _light1;
     [SerializeField, Header("ライト2のMeshRenderer"), Tooltip("2つ目のライトのメッシュレンダラー")] MeshRenderer _light2;
     [SerializeField, Header("ライト3のMeshRenderer"), Tooltip("3つ目のライトのメッシュレンダラー")] MeshRenderer _light3;
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         _clearState = Clear.ClearSitenaiMan;
         _lever.SetActive(false);
         _textBox.SetActive(false);
-        _nazo.enabled = false;
+        _nazo.SetActive(false);
         Transfer();
     }
 
@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Mouse1))
         {
             Debug.Log(_clearState);
-            _nazo.enabled = true;
         }
 
         //全部の謎解いたら、ステータスが「すべての謎を解いた」になる
@@ -71,6 +70,13 @@ public class GameManager : MonoBehaviour
             if (_hit.collider.gameObject.name == "Nazo")
             {
                 Debug.Log("なぞだ");
+                _nazo.SetActive(true);
+            }
+
+            //タイプライタークリックしたら、入力画面でてくる
+            if(_hit.collider.gameObject.name == "Typewriter")
+            {
+                Debug.Log("タイプライターだ");
 
             }
 
@@ -127,8 +133,10 @@ public class GameManager : MonoBehaviour
             _light2.material = _lightEmission;
             _clearState |= Clear.SecondStageClear;
         }
+
     }
 
+    /// <summary>ボタンリストに要素を入れる関数</summary>
     private void Transfer()
     {
         _button.Clear();
