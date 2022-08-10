@@ -11,12 +11,32 @@ public class InputText : MonoBehaviour
     void Start()
     {
         _inputText = GetComponent<Text>();
+        _inputText.text = "";
     }
 
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            InputChar('A');
+        }
+
+        if(Input.GetKeyDown(KeyCode.Backspace))
+        {
+            Delete();
+        }
     }
 
-    private char Input(char )
+    /// <summary>テキストに文字を入力する関数</summary>
+    /// <param name="a"></param>
+    private void InputChar(char a)
+    {
+        string nowText = _inputText.text;
+        _inputText.text = $"{nowText}{a}";
+    }
+
+    private void Delete()
+    {
+        _inputText.text = $"{_inputText.text.Substring(0, _inputText.text.Length - 1)}";
+    }
 }
