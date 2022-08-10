@@ -16,27 +16,35 @@ public class InputText : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            InputChar('A');
-        }
 
-        if(Input.GetKeyDown(KeyCode.Backspace))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             Delete();
         }
+        else
+        {
+            string input = Input.inputString;
+            InputChar(input);
+        }
+
     }
 
     /// <summary>テキストに文字を入力する関数</summary>
     /// <param name="a"></param>
-    private void InputChar(char a)
+    private void InputChar(string a)
     {
-        string nowText = _inputText.text;
-        _inputText.text = $"{nowText}{a}";
+        if(_inputText.text.Length < 15)
+        {
+            string nowText = _inputText.text;
+            _inputText.text = $"{nowText}{a}";
+        }
     }
 
     private void Delete()
     {
-        _inputText.text = $"{_inputText.text.Substring(0, _inputText.text.Length - 1)}";
+        if(_inputText.text.Length > 0)
+        {
+            _inputText.text = $"{_inputText.text.Substring(0, _inputText.text.Length - 1)}";
+        }
     }
 }
