@@ -7,19 +7,23 @@ using UnityEngine.UI;
 /// <summary>ゲームマネージャー！！！！！！！！！</summary>
 public class GameManager : MonoBehaviour
 {
-    [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
+    Clear _clearState;
+
     [SerializeField, Header("ライト1のMeshRenderer"), Tooltip("1つ目のライトのメッシュレンダラー")] MeshRenderer _light1;
     [SerializeField, Header("ライト2のMeshRenderer"), Tooltip("2つ目のライトのメッシュレンダラー")] MeshRenderer _light2;
     [SerializeField, Header("ライト3のMeshRenderer"), Tooltip("3つ目のライトのメッシュレンダラー")] MeshRenderer _light3;
     [SerializeField, Header("光ってないマテリアル"), Tooltip("ライトがひかってないときのマテリアル")] Material _lightMaterial;
     [SerializeField, Header("光るMaterial"), Tooltip("ライトが光ってるマテリアル")] Material _lightEmission;
+
+    [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
+    [SerializeField, Header("入力するテキストGameObject"), Tooltip("タイプライターをクリックしたときに出てくる入力画面パネル")] GameObject _inputText;
     [SerializeField, Header("レバー"), Tooltip("レバーのゲームオブジェクト")] GameObject _lever;
-    [SerializeField, Header("テキストボックス"), Tooltip("テキストボックスのゲームオブジェクト")] GameObject _textBox;
+
     [Tooltip("背面にある色付きボタンのリスト")] List<string> _button = new();
+    [Tooltip("ボタンの配列 押す順番に名前が入ってる")]
+    string[] _colorButton = { "YellowButton", "WhiteButton", "BlueButton", "RedButton", "GreenButton" };
     [SerializeField, Tooltip("ボタンを正しく押せた時に光るライトのリスト")] List<MeshRenderer> _lights = new(5);
     [Tooltip("ライトのやつカウントする数字")] int _lighting = 0;
-    [Tooltip("ボタンの文字列の配列")] string[] _colorButton = { "YellowButton", "WhiteButton", "BlueButton", "RedButton", "GreenButton" };
-    Clear _clearState;
 
     /// <summary>謎解きの進行度</summary>
     enum Clear
@@ -39,14 +43,15 @@ public class GameManager : MonoBehaviour
     {
         _clearState = Clear.ClearSitenaiMan;
         _lever.SetActive(false);
-        _textBox.SetActive(false);
         _nazo.SetActive(false);
+        _inputText.SetActive(false);
         Transfer();
     }
 
     
     void Update()
     {
+        //右クリックで現在のクリア状況を確認
         if(Input.GetKeyDown(KeyCode.Mouse1))
         {
             Debug.Log(_clearState);
@@ -77,7 +82,7 @@ public class GameManager : MonoBehaviour
             if(_hit.collider.gameObject.name == "Typewriter")
             {
                 Debug.Log("タイプライターだ");
-
+                _inputText.SetActive(true);
             }
 
             if(_hit.collider.gameObject == _lever)
@@ -113,16 +118,6 @@ public class GameManager : MonoBehaviour
                 }
 
             }
-
-            //if(_hit.collider.gameObject.name == "Plane")
-            //{
-            //    _clearState |= Clear.FirstStageClear;
-            //}
-
-            //if (_hit.collider.gameObject.name == "Monitor")
-            //{
-            //    _clearState |= Clear.ThirdStageClear;
-            //}
 
         }
 
