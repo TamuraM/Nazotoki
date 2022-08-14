@@ -7,6 +7,9 @@ using UnityEngine.UI;
 /// <summary>ゲームマネージャー！！！！！！！！！</summary>
 public class GameManager : MonoBehaviour
 {
+
+    public static GameManager instance; 
+
     Clear _clearState;
 
     [SerializeField, Header("ライト1のMeshRenderer"), Tooltip("1つ目のライトのメッシュレンダラー")] MeshRenderer _light1;
@@ -17,7 +20,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
     [SerializeField, Header("入力するテキストGameObject"), Tooltip("タイプライターをクリックしたときに出てくる入力画面パネル")] GameObject _inputText;
-    [SerializeField, Header("レバー"), Tooltip("レバーのゲームオブジェクト")] GameObject _lever;
+    [SerializeField, Header("レバー"), Tooltip("レバーのゲームオブジェクト")] GameObject _lever ;
 
     [Tooltip("背面にある色付きボタンのリスト")] List<string> _button = new();
     [Tooltip("ボタンの配列 押す順番に名前が入ってる")]
@@ -37,6 +40,18 @@ public class GameManager : MonoBehaviour
         ThirdStageClear = 1 << 2,
         /// <summary>すべての謎解けた</summary>
         AllStageClear = 1 << 3, 
+    }
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
@@ -69,7 +84,7 @@ public class GameManager : MonoBehaviour
 
         if (Physics.Raycast(_ray, out _hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
         {
-            Debug.Log(_hit.collider.gameObject.name);
+            //Debug.Log(_hit.collider.gameObject.name);
 
             //左側にある謎解き　机の上の紙クリックして謎解いてなんかしたらレバー現れる
             if (_hit.collider.gameObject.name == "Nazo")
@@ -140,5 +155,10 @@ public class GameManager : MonoBehaviour
         {
             _button.Add(_colorButton[i]);
         }
+    }
+
+    public GameObject GetLever()
+    {
+        return _lever;
     }
 }
