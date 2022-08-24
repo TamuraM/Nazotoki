@@ -20,10 +20,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
     [SerializeField, Header("入力するテキストGameObject"), Tooltip("タイプライターをクリックしたときに出てくる入力画面パネル")] GameObject _inputText;
-    [SerializeField, Header("レバー"), Tooltip("レバーのゲームオブジェクト")] GameObject _lever ;
+    [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
 
-    [Tooltip("背面にある色付きボタンのリスト")] List<string> _button = new();
-    [Tooltip("ボタンの配列 押す順番に名前が入ってる")]
+    [Tooltip("背面にある色付きボタンのリスト")] List<string> _buttons = new();
+    [Tooltip("ボタンの配列 押す順番に名前が入ってる")] //黄、白、青、赤、緑
     string[] _colorButton = { "YellowButton", "WhiteButton", "BlueButton", "RedButton", "GreenButton" };
     [SerializeField, Tooltip("ボタンを正しく押せた時に光るライトのリスト")] List<MeshRenderer> _lights = new(5);
     [Tooltip("ライトのやつカウントする数字")] int _lighting = 0;
@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         _clearState = Clear.ClearSitenaiMan;
-        _lever.SetActive(false);
+        _button.SetActive(false);
         _nazo.SetActive(false);
         _inputText.SetActive(false);
         Transfer();
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
                 _inputText.SetActive(true);
             }
 
-            if(_hit.collider.gameObject == _lever)
+            if(_hit.collider.gameObject == _button)
             {
                 _clearState |= Clear.FirstStageClear;
             }
@@ -109,10 +109,10 @@ public class GameManager : MonoBehaviour
             //メインカメラからRayを飛ばして、オブジェクトを探す
             //左クリックしたオブジェクトが_buttonリストの0番目と同じならリストから消える
             //全部消えたらクリア
-            if (_hit.collider.gameObject.name == _button[0])
+            if (_hit.collider.gameObject.name == _buttons[0])
             {
-                _button.RemoveAt(0);
-                Debug.Log(_button.Count);
+                _buttons.RemoveAt(0);
+                Debug.Log(_buttons.Count);
                 _lights[_lighting].material = _lightEmission;
 
                 if(_lighting < 5)
@@ -121,10 +121,10 @@ public class GameManager : MonoBehaviour
                 }
 
             }
-            else if(_hit.collider.gameObject.name != _button[0] && _hit.collider.gameObject.tag == "ColorButton")
+            else if(_hit.collider.gameObject.name != _buttons[0] && _hit.collider.gameObject.tag == "ColorButton")
             {
                 Transfer();
-                Debug.Log(_button.Count);
+                Debug.Log(_buttons.Count);
                 _lighting = 0;
 
                 foreach(MeshRenderer light in _lights)
@@ -137,9 +137,9 @@ public class GameManager : MonoBehaviour
         }
 
         //リストの中身がなくなったら、2個目のライトを光らせる
-        if (_button.Count == 0)
+        if (_buttons.Count == 0)
         {
-            _button.Add("a");
+            _buttons.Add("a");
             _light2.material = _lightEmission;
             _clearState |= Clear.SecondStageClear;
         }
@@ -149,16 +149,11 @@ public class GameManager : MonoBehaviour
     /// <summary>ボタンリストに要素を入れる関数</summary>
     private void Transfer()
     {
-        _button.Clear();
+        _buttons.Clear();
 
         for (int i = 0; i < _colorButton.Length; i++)
         {
-            _button.Add(_colorButton[i]);
+            _buttons.Add(_colorButton[i]);
         }
-    }
-
-    public GameObject GetLever()
-    {
-        return _lever;
     }
 }

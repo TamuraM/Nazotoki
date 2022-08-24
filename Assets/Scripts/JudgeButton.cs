@@ -8,7 +8,7 @@ public class JudgeButton : ButtonBase
 {
     [Tooltip("入力されたテキスト")] Text _inputText;
     [Tooltip("謎の答え")] string seikai = "";
-    [SerializeField, Header("レバー"), Tooltip("レバーのゲームオブジェクト")] GameObject _lever;
+    [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
     [Tooltip("文字入力の後ろにあるパネル")] GameObject _inputTextBackground;
 
     // Start is called before the first frame update
@@ -16,7 +16,7 @@ public class JudgeButton : ButtonBase
     {
         _inputTextBackground = GameObject.Find("InputTextBackground");
         _inputText = GameObject.Find("InputText").GetComponent<Text>();
-        _lever.SetActive(false);
+        _button.SetActive(false);
     }
 
     public override void Click()
@@ -25,8 +25,12 @@ public class JudgeButton : ButtonBase
         if(_inputText.text == seikai)
         {
             //正解だったらレバーが現れる
-            _lever.SetActive(true);
+            _button.SetActive(true);
             _inputTextBackground.SetActive(false);
+        }
+        else
+        {
+            _inputText.text = "";
         }
     }
 }
