@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Linq;
 
 /// <summary>ゲームマネージャー！！！！！！！！！</summary>
 public class GameManager : MonoBehaviour
@@ -27,6 +28,8 @@ public class GameManager : MonoBehaviour
     string[] _colorButton = { "YellowButton", "WhiteButton", "BlueButton", "RedButton", "GreenButton" };
     [SerializeField, Tooltip("ボタンを正しく押せた時に光るライトのリスト")] List<MeshRenderer> _lights = new(5);
     [Tooltip("ライトのやつカウントする数字")] int _lighting = 0;
+
+    [Tooltip("オブジェクトに触れる時かどうか")] bool _inGame;
 
     /// <summary>謎解きの進行度</summary>
     enum Clear
@@ -60,7 +63,7 @@ public class GameManager : MonoBehaviour
         _button.SetActive(false);
         _nazo.SetActive(false);
         _inputText.SetActive(false);
-        Transfer();
+        _buttons = _colorButton.ToList();
     }
 
     
@@ -82,60 +85,61 @@ public class GameManager : MonoBehaviour
         Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit _hit;
 
-        if (Physics.Raycast(_ray, out _hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
+        if(_inGame)
         {
-            //Debug.Log(_hit.collider.gameObject.name);
-
-            //左側にある謎解き　机の上の紙クリックして謎解いてなんかしたらレバー現れる
-            if (_hit.collider.gameObject.name == "Nazo")
+            if (Physics.Raycast(_ray, out _hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
             {
-                Debug.Log("なぞだ");
-                _nazo.SetActive(true);
-            }
+                //Debug.Log(_hit.collider.gameObject.name);
 
-            //タイプライタークリックしたら、入力画面でてくる
-            if(_hit.collider.gameObject.name == "Typewriter")
-            {
-                Debug.Log("タイプライターだ");
-                _inputText.SetActive(true);
-            }
-
-            if(_hit.collider.gameObject == _button)
-            {
-                _clearState |= Clear.FirstStageClear;
-            }
-
-            //背面にある謎解き　クリックした順番があってたらクリア
-            //メインカメラからRayを飛ばして、オブジェクトを探す
-            //左クリックしたオブジェクトが_buttonリストの0番目と同じならリストから消える
-            //全部消えたらクリア
-            if (_hit.collider.gameObject.name == _buttons[0])
-            {
-                _buttons.RemoveAt(0);
-                Debug.Log(_buttons.Count);
-                _lights[_lighting].material = _lightEmission;
-
-                if(_lighting < 5)
+                //左側にある謎解き　机の上の紙クリックして謎解いてなんかしたらレバー現れる
+                if (_hit.collider.gameObject.name == "Nazo")
                 {
-                    _lighting++;
+                    Debug.Log("なぞだ");
+                    _nazo.SetActive(true);
+                }
+
+                //タイプライタークリックしたら、入力画面でてくる
+                if (_hit.collider.gameObject.name == "Typewriter")
+                {
+                    Debug.Log("タイプライターだ");
+                    _inputText.SetActive(true);
+                }
+
+                if (_hit.collider.gameObject == _button)
+                {
+                    _clearState |= Clear.FirstStageClear;
+                }
+
+                //背面にある謎解き　クリックした順番があってたらクリア
+                //メインカメラからRayを飛ばして、オブジェクトを探す
+                //左クリックしたオブジェクトが_buttonリストの0番目と同じならリストから消える
+                //全部消えたらクリア
+                if (_hit.collider.gameObject.name == _buttons[0])
+                {
+                    //正解のボタンを押したら、上にあるライトが順番に点く
+                    _buttons.RemoveAt(0);
+                    Debug.Log(_buttons.Count);
+                    _lights[_lighting].material = _lightEmission;
+                    _lighting = _lighting < 5 ? _lighting++ : _lighting;
+                }
+                else if (_hit.collider.gameObject.name != _buttons[0] && _hit.collider.gameObject.tag == "ColorButton")
+                {
+                    //間違ったボタンを押したら、上にあるライトが全部消える
+                    _buttons = _colorButton.ToList();
+                    Debug.Log(_buttons.Count);
+                    _lighting = 0;
+                    _lights.ForEach(light => light.material = _lightMaterial);
+
+                    //foreach (MeshRenderer light in _lights)
+                    //{
+                    //    light.material = _lightMaterial;
+                    //}
+
                 }
 
             }
-            else if(_hit.collider.gameObject.name != _buttons[0] && _hit.collider.gameObject.tag == "ColorButton")
-            {
-                Transfer();
-                Debug.Log(_buttons.Count);
-                _lighting = 0;
-
-                foreach(MeshRenderer light in _lights)
-                {
-                    light.material = _lightMaterial;
-                }
-
-            }
-
         }
-
+        
         //リストの中身がなくなったら、2個目のライトを光らせる
         if (_buttons.Count == 0)
         {
@@ -146,14 +150,4 @@ public class GameManager : MonoBehaviour
 
     }
 
-    /// <summary>ボタンリストに要素を入れる関数</summary>
-    private void Transfer()
-    {
-        _buttons.Clear();
-
-        for (int i = 0; i < _colorButton.Length; i++)
-        {
-            _buttons.Add(_colorButton[i]);
-        }
-    }
 }

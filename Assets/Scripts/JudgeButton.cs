@@ -11,7 +11,6 @@ public class JudgeButton : ButtonBase
     [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
     [Tooltip("文字入力の後ろにあるパネル")] GameObject _inputTextBackground;
 
-    // Start is called before the first frame update
     void Start()
     {
         _inputTextBackground = GameObject.Find("InputTextBackground");

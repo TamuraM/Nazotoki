@@ -40,6 +40,7 @@ public class InputText : MonoBehaviour
         }
     }
 
+    /// <summary>テキストの文字を消す関数</summary>
     private void Delete()
     {
         if(_inputText.text.Length > 0)
