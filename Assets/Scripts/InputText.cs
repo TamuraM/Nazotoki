@@ -33,11 +33,8 @@ public class InputText : MonoBehaviour
     /// <param name="a"></param>
     private void InputChar(string a)
     {
-        if(_inputText.text.Length < 15)
-        {
-            string nowText = _inputText.text;
-            _inputText.text = $"{nowText}{a}";
-        }
+        string nowText = _inputText.text;
+        _inputText.text = _inputText.text.Length < 15 ? $"{nowText}{a}" : _inputText.text;
     }
 
     /// <summary>テキストの文字を消す関数</summary>

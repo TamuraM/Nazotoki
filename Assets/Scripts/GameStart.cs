@@ -11,20 +11,23 @@ public class GameStart : MonoBehaviour
     Animator _startAnim;
     [SerializeField, Header("ストーリーのText")] GameObject _storyText;
     [SerializeField, Header("フェードした後の間隔")] float _fade;
+    [SerializeField, Tooltip("押されたことがあるか")] bool _isPushed;
 
     private void Start()
     {
         _titleAnim = _title.GetComponent<Animator>();
         _startAnim = _start.GetComponent<Animator>();
         _storyText.SetActive(false);
+        _isPushed = false;
     }
 
     void Update()
     {
         //なにかが押されたらシーン移行
-        if(Input.anyKeyDown)
+        if(Input.anyKeyDown && !_isPushed)
         {
             StartCoroutine(Fade());
+            _isPushed = !_isPushed;
         }
 
     }

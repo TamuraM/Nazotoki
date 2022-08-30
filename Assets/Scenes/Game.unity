@@ -491,7 +491,7 @@ GameObject:
   - component: {fileID: 106188674}
   - component: {fileID: 106188673}
   m_Layer: 0
-  m_Name: Button
+  m_Name: FirstButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2264,7 +2264,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &916618120
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3602,6 +3602,7 @@ MonoBehaviour:
   _start: {fileID: 2024835864}
   _storyText: {fileID: 1473337331}
   _fade: 2
+  _isPushed: 0
 --- !u!1 &1283082587
 GameObject:
   m_ObjectHideFlags: 0
@@ -4112,6 +4113,7 @@ GameObject:
   - component: {fileID: 1473337332}
   - component: {fileID: 1473337334}
   - component: {fileID: 1473337333}
+  - component: {fileID: 1473337335}
   m_Layer: 5
   m_Name: StoryText
   m_TagString: Untagged
@@ -4181,6 +4183,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1473337331}
   m_CullTransparentMesh: 1
+--- !u!114 &1473337335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1473337331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28b1f1cec3002f4a80550d15ca47831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1559175598 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8329093120746709871, guid: eded3844e29c2ec40bc278e2cbd31279, type: 3}
@@ -5414,7 +5428,7 @@ GameObject:
   - component: {fileID: 2024835867}
   - component: {fileID: 2024835866}
   m_Layer: 5
-  m_Name: Start
+  m_Name: StartText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5481,7 +5495,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 6db3c03e0c4ebf147b3fc16ca21a4283, type: 3}
     m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0

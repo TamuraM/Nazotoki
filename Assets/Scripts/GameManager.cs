@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("ライトのやつカウントする数字")] int _lighting = 0;
 
     [Tooltip("オブジェクトに触れる時かどうか")] bool _inGame;
+    public bool InGame { get => _inGame; set => _inGame = value; }
 
     /// <summary>謎解きの進行度</summary>
     enum Clear
@@ -74,13 +75,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log(_clearState);
         }
-
-        //全部の謎解いたら、ステータスが「すべての謎を解いた」になる
-        if((_clearState & Clear.FirstStageClear) == Clear.FirstStageClear && (_clearState & Clear.SecondStageClear) == Clear.SecondStageClear && (_clearState & Clear.ThirdStageClear) == Clear.ThirdStageClear)
-        {
-            _clearState = Clear.AllStageClear;
-        }
-
         
         Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit _hit;
@@ -91,61 +85,72 @@ public class GameManager : MonoBehaviour
             {
                 //Debug.Log(_hit.collider.gameObject.name);
 
-                //左側にある謎解き　机の上の紙クリックして謎解いてなんかしたらレバー現れる
-                if (_hit.collider.gameObject.name == "Nazo")
+                if((_clearState & Clear.FirstStageClear) != Clear.FirstStageClear)
                 {
-                    Debug.Log("なぞだ");
-                    _nazo.SetActive(true);
-                }
 
-                //タイプライタークリックしたら、入力画面でてくる
-                if (_hit.collider.gameObject.name == "Typewriter")
+                    //左側にある謎解き　机の上の紙クリックして謎解いてなんかしたらレバー現れる
+                    switch (_hit.collider.gameObject.name)
+                    {
+                        //謎をクリックしたら拡大
+                        case "Nazo":
+                            Debug.Log("なぞだ");
+                            _nazo.SetActive(true);
+                            break;
+                        //タイプライターをクリックしたら入力画面でてくる
+                        case "Typewriter":
+                            Debug.Log("タイプライターだ");
+                            _inputText.SetActive(true);
+                            break;
+                        //ボタン押したらクリア　ライト光る
+                        case "FirstButton":
+                            _light2.material = _lightEmission;
+                            _clearState |= Clear.FirstStageClear;
+                            break;
+                        default: return;
+                    }
+ 
+                }
+                
+                if((_clearState & Clear.SecondStageClear) == Clear.SecondStageClear)
                 {
-                    Debug.Log("タイプライターだ");
-                    _inputText.SetActive(true);
-                }
 
-                if (_hit.collider.gameObject == _button)
-                {
-                    _clearState |= Clear.FirstStageClear;
-                }
+                    //背面にある謎解き　クリックした順番があってたらクリア
+                    if (_hit.collider.gameObject.name == _buttons[0])
+                    {
+                        //正解のボタンを押したら、上にあるライトが順番に点く
+                        _buttons.RemoveAt(0);
+                        Debug.Log(_buttons.Count);
+                        _lights[_lighting].material = _lightEmission;
+                        _lighting = _lighting < 5 ? _lighting++ : _lighting;
+                    }
+                    else if (_hit.collider.gameObject.name != _buttons[0] && _hit.collider.gameObject.tag == "ColorButton")
+                    {
+                        //間違ったボタンを押したら、上にあるライトが全部消える
+                        _buttons = _colorButton.ToList();
+                        Debug.Log(_buttons.Count);
+                        _lighting = 0;
+                        _lights.ForEach(light => light.material = _lightMaterial);
+                    }
 
-                //背面にある謎解き　クリックした順番があってたらクリア
-                //メインカメラからRayを飛ばして、オブジェクトを探す
-                //左クリックしたオブジェクトが_buttonリストの0番目と同じならリストから消える
-                //全部消えたらクリア
-                if (_hit.collider.gameObject.name == _buttons[0])
-                {
-                    //正解のボタンを押したら、上にあるライトが順番に点く
-                    _buttons.RemoveAt(0);
-                    Debug.Log(_buttons.Count);
-                    _lights[_lighting].material = _lightEmission;
-                    _lighting = _lighting < 5 ? _lighting++ : _lighting;
-                }
-                else if (_hit.collider.gameObject.name != _buttons[0] && _hit.collider.gameObject.tag == "ColorButton")
-                {
-                    //間違ったボタンを押したら、上にあるライトが全部消える
-                    _buttons = _colorButton.ToList();
-                    Debug.Log(_buttons.Count);
-                    _lighting = 0;
-                    _lights.ForEach(light => light.material = _lightMaterial);
-
-                    //foreach (MeshRenderer light in _lights)
-                    //{
-                    //    light.material = _lightMaterial;
-                    //}
+                    //クリアしたら、2個目のライトを光らせる
+                    if (_buttons.Count == 0)
+                    {
+                        _buttons.Add("a");
+                        _light2.material = _lightEmission;
+                        _clearState |= Clear.SecondStageClear;
+                    }
 
                 }
+                
 
             }
+
         }
-        
-        //リストの中身がなくなったら、2個目のライトを光らせる
-        if (_buttons.Count == 0)
+
+        //全部の謎解いたら、ステータスが「すべての謎を解いた」になる
+        if ((_clearState & Clear.FirstStageClear) == Clear.FirstStageClear && (_clearState & Clear.SecondStageClear) == Clear.SecondStageClear && (_clearState & Clear.ThirdStageClear) == Clear.ThirdStageClear)
         {
-            _buttons.Add("a");
-            _light2.material = _lightEmission;
-            _clearState |= Clear.SecondStageClear;
+            _clearState = Clear.AllStageClear;
         }
 
     }

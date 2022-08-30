@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class TextManager : MonoBehaviour
 {
     [SerializeField, Header("テキストボックス"), Tooltip("テキストボックスのゲームオブジェクト")] GameObject _textBox;
-    [Header("テキスト"), Tooltip("テキストのオブジェクト")] Text _text;
+    [Tooltip("テキストのオブジェクト")] Text _text;
 
     private void Start()
     {
