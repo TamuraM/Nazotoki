@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>テキストを管理してます</summary>
+/// <summary>ヒントとかのテキストを管理してます</summary>
 public class TextManager : MonoBehaviour
 {
     [SerializeField, Header("テキストボックス"), Tooltip("テキストボックスのゲームオブジェクト")] GameObject _textBox;

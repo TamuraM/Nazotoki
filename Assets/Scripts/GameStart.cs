@@ -42,6 +42,6 @@ public class GameStart : MonoBehaviour
         _title.SetActive(false);
         _start.SetActive(false);
         _storyText.SetActive(true);
-        GameManager.instance.ReadStory = true;
+        GameManager.instance._gameMode = GameManager.GameMode.Opening;
     }
 }

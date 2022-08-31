@@ -11,26 +11,46 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+    //ドアの横にあるライト
     [SerializeField, Header("ライト1のMeshRenderer"), Tooltip("1つ目のライトのメッシュレンダラー")] MeshRenderer _light1;
     [SerializeField, Header("ライト2のMeshRenderer"), Tooltip("2つ目のライトのメッシュレンダラー")] MeshRenderer _light2;
     [SerializeField, Header("ライト3のMeshRenderer"), Tooltip("3つ目のライトのメッシュレンダラー")] MeshRenderer _light3;
     [SerializeField, Header("光ってないマテリアル"), Tooltip("ライトがひかってないときのマテリアル")] Material _lightMaterial;
     [SerializeField, Header("光るMaterial"), Tooltip("ライトが光ってるマテリアル")] Material _lightEmission;
 
+    //左側の謎関係
     [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
     [SerializeField, Header("入力するテキストGameObject"), Tooltip("タイプライターをクリックしたときに出てくる入力画面パネル")] GameObject _inputText;
     [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
 
-    [Tooltip("背面にある色付きボタンのリスト")] List<string> _buttons = new();
+    //後ろ側の謎関係
+    [Tooltip("背面にある色付きボタンのリスト")] List<string> _colorButtons = new();
     [Tooltip("ボタンの配列 押す順番に名前が入ってる")] //黄、白、青、赤、緑
     string[] _colorButton = { "YellowButton", "WhiteButton", "BlueButton", "RedButton", "GreenButton" };
     [SerializeField, Tooltip("ボタンを正しく押せた時に光るライトのリスト")] List<MeshRenderer> _lights = new(5);
     [Tooltip("ライトのやつカウントする数字")] int _lighting = 0;
 
-    [Tooltip("ゲームがスタートしたかどうか")] bool _readStory;
-    public bool ReadStory { get => _readStory; set => _readStory = value; }
-    [SerializeField, Tooltip("オブジェクトに触れる時かどうか")] bool _inGame;
-    public bool InGame { get => _inGame; set => _inGame = value; }
+    //右側の謎関係
+    [SerializeField, Header("モニターの画像")] SpriteRenderer _monitor;
+    [SerializeField, Header("謎の画像たちリスト")] Sprite[] _questions = new Sprite[3];
+    [SerializeField, Header("ボタンを押す順番に入れる")] GameObject[] _spriteButton = new GameObject[3];
+    [Tooltip("押すボタンのList")] List<GameObject> _spriteButtons = new();
+    [SerializeField, Header("まるの画像")] Sprite _circle; //正解の時
+    [SerializeField, Header("ばつの画像")] Sprite _cross; //不正解の時
+    [Tooltip("今何問目か")] int _clearSprite = 0;
+
+    /// <summary>ゲーム内の状態</summary>
+    public enum GameMode
+    {
+        Title, //タイトル画面
+        Opening, //オープニング中
+        PlayGame, //ゲームプレイ中
+        Thinking, //ヒントを考えてる
+        GameClear, //脱出成功のエンディング
+        GameOver, //時間切れのエンディング
+    }
+
+    public GameMode _gameMode;
 
     /// <summary>謎解きの進行度</summary>
     public enum Clear
@@ -63,10 +83,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         _clearState = Clear.ClearSitenaiMan;
+        _gameMode = GameMode.Title;
+
         _button.SetActive(false);
         _nazo.SetActive(false);
         _inputText.SetActive(false);
-        _buttons = _colorButton.ToList();
+
+        _colorButtons = _colorButton.ToList();
+        _spriteButtons = _spriteButton.ToList();
+        _monitor.sprite = _questions[_clearSprite];
     }
 
 
@@ -78,45 +103,45 @@ public class GameManager : MonoBehaviour
             Debug.Log(_clearState);
         }
 
-        Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit _hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
         //if(_inGame)
         //{
-        if (Physics.Raycast(_ray, out _hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
+        if (Physics.Raycast(ray, out hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
         {
-            var hit = _hit.collider.gameObject.name;
             Debug.Log(hit);
 
             //----------左側にある謎解き----------
             //机の上の紙クリックしたら謎が拡大される
-            if (hit == "Nazo")
+            if (hit.collider.gameObject.name == "Nazo")
             {
                 Debug.Log("なぞだ");
                 _nazo.SetActive(true);
             }
 
             //タイプライターをクリックしたら入力画面が出てくる
-            if(hit == "Typewriter")
+            if(hit.collider.gameObject.name == "Typewriter")
             {
                 Debug.Log("タイプライターだ");
                 _inputText.SetActive(true);
             }
 
             //ボタンをクリックしたらクリア
-            if(hit == "FirstButton")
+            if(hit.collider.gameObject.name == "PushMe")
             {
                 _light1.material = _lightEmission;
                 _clearState |= Clear.FirstStageClear;
             }
             //----------ここまで----------
 
+
             //----------背面にある謎解き----------　クリックした順番があってたらクリア
-            if (hit == _buttons[0])
+            if (hit.collider.gameObject.name == _colorButtons[0])
             {
                 //正解のボタンを押したら、上にあるライトが順番に点く
-                _buttons.RemoveAt(0);
-                Debug.Log(_buttons.Count);
+                _colorButtons.RemoveAt(0);
+                //Debug.Log(_colorButtons.Count);
                 _lights[_lighting].material = _lightEmission;
 
                 if (_lighting < 5)
@@ -125,24 +150,41 @@ public class GameManager : MonoBehaviour
                 }
 
             }
-            else if (hit != _buttons[0] && _hit.collider.gameObject.tag == "ColorButton")
+            else if (hit.collider.gameObject.name != _colorButtons[0] && hit.collider.gameObject.tag == "ColorButton")
             {
                 //間違ったボタンを押したら、上にあるライトが全部消える
-                _buttons = _colorButton.ToList();
-                Debug.Log(_buttons.Count);
+                _colorButtons = _colorButton.ToList();
+                Debug.Log(_colorButtons.Count);
                 _lighting = 0;
                 _lights.ForEach(light => light.material = _lightMaterial);
             }
 
             //クリアしたら、2個目のライトを光らせる
-            if (_buttons.Count == 0)
+            if (_colorButtons.Count == 0)
             {
-                _buttons.Add("a");
+                _colorButtons.Add("a");
                 _light2.material = _lightEmission;
                 _clearState |= Clear.SecondStageClear;
             }
             //----------ここまで----------
 
+
+            //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
+            if(hit.collider.gameObject.name == _spriteButtons[0].ToString())
+            {
+                //正解したらまるの画像がでてきて、次の問題が表示される
+
+                if(_clearSprite < 2)
+                {
+                    _clearSprite++;
+                }
+                
+                _spriteButtons.RemoveAt(0);
+                StartCoroutine(SpriteQuestion());
+            }
+
+
+            //----------ここまで----------
             //}
 
         }
@@ -153,6 +195,13 @@ public class GameManager : MonoBehaviour
             _clearState = Clear.AllStageClear;
         }
 
+    }
+
+    IEnumerator SpriteQuestion()
+    {
+        _monitor.sprite = _circle;
+        yield return new WaitForSeconds(1.0f);
+        _monitor.sprite = _questions[_clearSprite];
     }
 
 }

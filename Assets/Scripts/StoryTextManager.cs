@@ -17,15 +17,21 @@ public class StoryTextManager : MonoBehaviour
     void Update()
     {
         //ゲームが始まったらオープニングストーリーを表示
-        if(GameManager.instance.ReadStory)
+        if(GameManager.instance._gameMode == GameManager.GameMode.Opening)
         {
+            //話が終わったらゲームに移行
             _storyPanel.SetActive(false);
-            GameManager.instance.ReadStory = false;
-            GameManager.instance.InGame = true;
+            GameManager.instance._gameMode = GameManager.GameMode.PlayGame;
         }
 
         //ゲームクリアしたらエンディングストーリーを表示
-        if(GameManager.instance._clearState == GameManager.Clear.AllStageClear)
+        if(GameManager.instance._gameMode == GameManager.GameMode.GameClear)
+        {
+
+        }
+
+        //時間切れになったらバッドエンドストーリーを表示
+        if(GameManager.instance._gameMode == GameManager.GameMode.GameOver)
         {
 
         }
