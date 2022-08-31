@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class JudgeButton : ButtonBase
 {
     [Tooltip("入力されたテキスト")] Text _inputText;
-    [Tooltip("謎の答え")] string seikai = "";
+    [Tooltip("謎の答え")] string seikai = "answer";
     [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
     [Tooltip("文字入力の後ろにあるパネル")] GameObject _inputTextBackground;
 

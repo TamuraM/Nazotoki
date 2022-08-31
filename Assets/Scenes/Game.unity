@@ -3538,6 +3538,7 @@ GameObject:
   - component: {fileID: 1236517393}
   - component: {fileID: 1236517392}
   - component: {fileID: 1236517394}
+  - component: {fileID: 1236517395}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3571,6 +3572,8 @@ MonoBehaviour:
   - {fileID: 192626450}
   - {fileID: 1004789656}
   - {fileID: 944422491}
+  _inGame: 0
+  _clearState: 0
 --- !u!4 &1236517393
 Transform:
   m_ObjectHideFlags: 0
@@ -3603,6 +3606,20 @@ MonoBehaviour:
   _storyText: {fileID: 1473337331}
   _fade: 2
   _isPushed: 0
+--- !u!114 &1236517395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236517391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28b1f1cec3002f4a80550d15ca47831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _storyPanel: {fileID: 916618119}
+  _storyText: {fileID: 1473337333}
 --- !u!1 &1283082587
 GameObject:
   m_ObjectHideFlags: 0
@@ -4195,6 +4212,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a28b1f1cec3002f4a80550d15ca47831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _storyPanel: {fileID: 916618119}
+  _storyText: {fileID: 1473337333}
 --- !u!224 &1559175598 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8329093120746709871, guid: eded3844e29c2ec40bc278e2cbd31279, type: 3}

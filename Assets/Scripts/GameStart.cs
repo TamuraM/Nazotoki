@@ -11,7 +11,7 @@ public class GameStart : MonoBehaviour
     Animator _startAnim;
     [SerializeField, Header("ストーリーのText")] GameObject _storyText;
     [SerializeField, Header("フェードした後の間隔")] float _fade;
-    [SerializeField, Tooltip("押されたことがあるか")] bool _isPushed;
+    [SerializeField, Tooltip("押されたか")] bool _isPushed;
 
     private void Start()
     {
@@ -42,5 +42,6 @@ public class GameStart : MonoBehaviour
         _title.SetActive(false);
         _start.SetActive(false);
         _storyText.SetActive(true);
+        GameManager.instance.ReadStory = true;
     }
 }
