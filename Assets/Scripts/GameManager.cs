@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
     [SerializeField, Header("ドアの謎")] GameObject _lastNazo;
     [SerializeField, Header("テンキー")] GameObject _numberKey;
     [SerializeField, Header("ドアの謎の背景")] GameObject _lastNazoBackground;
+    [SerializeField, Header("番号入力画面")] GameObject _numberKeyBackground;
 
     public bool _isFocused;
 
@@ -219,7 +220,8 @@ public class GameManager : MonoBehaviour
 
                 if(hit.collider.gameObject == _numberKey && !_isFocused)
                 {
-
+                    _numberKeyBackground.SetActive(true);
+                    _isFocused = true;
                 }
                 //----------ここまで----------
 
