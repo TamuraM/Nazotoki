@@ -26,6 +26,7 @@ public class JudgeButton : ButtonBase
             //³‰ğ‚¾‚Á‚½‚çƒŒƒo[‚ªŒ»‚ê‚é
             _button.SetActive(true);
             _inputTextBackground.SetActive(false);
+            GameManager.instance._isFocused = false;
         }
         else
         {

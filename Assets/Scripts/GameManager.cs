@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField, Header("光るMaterial"), Tooltip("ライトが光ってるマテリアル")] Material _lightEmission;
 
     //左側の謎関係
-    [SerializeField, Header("謎解きのImage"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
+    [SerializeField, Header("謎の背景"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
     [SerializeField, Header("入力するテキストGameObject"), Tooltip("タイプライターをクリックしたときに出てくる入力画面パネル")] GameObject _inputText;
     [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
 
@@ -38,6 +38,13 @@ public class GameManager : MonoBehaviour
     [SerializeField, Header("まるの画像")] Sprite _circle; //正解の時
     [SerializeField, Header("ばつの画像")] Sprite _cross; //不正解の時
     [Tooltip("今何問目か")] int _clearSprite = 0;
+
+    //ドアの謎関係
+    [SerializeField, Header("ドアの謎")] GameObject _lastNazo;
+    [SerializeField, Header("テンキー")] GameObject _numberKey;
+    [SerializeField, Header("ドアの謎の背景")] GameObject _lastNazoBackground;
+
+    public bool _isFocused;
 
     /// <summary>ゲーム内の状態</summary>
     public enum GameMode
@@ -88,6 +95,8 @@ public class GameManager : MonoBehaviour
         _button.SetActive(false);
         _nazo.SetActive(false);
         _inputText.SetActive(false);
+        _lastNazo.SetActive(false);
+        _numberKey.SetActive(false);
 
         _colorButtons = _colorButton.ToList();
         _spriteButtons = _spriteButton.ToList();
@@ -106,94 +115,119 @@ public class GameManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        //if(_inGame)
-        //{
-        if (Physics.Raycast(ray, out hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
+        if (_gameMode == GameMode.PlayGame)
         {
-            Debug.Log(hit);
-
-            //----------左側にある謎解き----------
-            //机の上の紙クリックしたら謎が拡大される
-            if (hit.collider.gameObject.name == "Nazo")
+            if (Physics.Raycast(ray, out hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
             {
-                Debug.Log("なぞだ");
-                _nazo.SetActive(true);
-            }
+                Debug.Log(hit.collider.gameObject.name);
 
-            //タイプライターをクリックしたら入力画面が出てくる
-            if(hit.collider.gameObject.name == "Typewriter")
-            {
-                Debug.Log("タイプライターだ");
-                _inputText.SetActive(true);
-            }
-
-            //ボタンをクリックしたらクリア
-            if(hit.collider.gameObject.name == "PushMe")
-            {
-                _light1.material = _lightEmission;
-                _clearState |= Clear.FirstStageClear;
-            }
-            //----------ここまで----------
-
-
-            //----------背面にある謎解き----------　クリックした順番があってたらクリア
-            if (hit.collider.gameObject.name == _colorButtons[0])
-            {
-                //正解のボタンを押したら、上にあるライトが順番に点く
-                _colorButtons.RemoveAt(0);
-                //Debug.Log(_colorButtons.Count);
-                _lights[_lighting].material = _lightEmission;
-
-                if (_lighting < 5)
+                //----------左側にある謎解き----------
+                //机の上の紙クリックしたら謎が拡大される
+                if (hit.collider.gameObject.name == "Nazo" && !_isFocused)
                 {
-                    _lighting++;
+                    Debug.Log("なぞだ");
+                    _nazo.SetActive(true);
+                    _isFocused = true; ;
                 }
 
-            }
-            else if (hit.collider.gameObject.name != _colorButtons[0] && hit.collider.gameObject.tag == "ColorButton")
-            {
-                //間違ったボタンを押したら、上にあるライトが全部消える
-                _colorButtons = _colorButton.ToList();
-                Debug.Log(_colorButtons.Count);
-                _lighting = 0;
-                _lights.ForEach(light => light.material = _lightMaterial);
-            }
-
-            //クリアしたら、2個目のライトを光らせる
-            if (_colorButtons.Count == 0)
-            {
-                _colorButtons.Add("a");
-                _light2.material = _lightEmission;
-                _clearState |= Clear.SecondStageClear;
-            }
-            //----------ここまで----------
-
-
-            //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
-            if(hit.collider.gameObject.name == _spriteButtons[0].ToString())
-            {
-                //正解したらまるの画像がでてきて、次の問題が表示される
-
-                if(_clearSprite < 2)
+                //タイプライターをクリックしたら入力画面が出てくる
+                if (hit.collider.gameObject.name == "Typewriter" && !_isFocused)
                 {
-                    _clearSprite++;
+                    Debug.Log("タイプライターだ");
+                    _inputText.SetActive(true);
+                    _isFocused = true; ;
                 }
-                
-                _spriteButtons.RemoveAt(0);
-                StartCoroutine(SpriteQuestion());
+
+                //ボタンをクリックしたらクリア
+                if (hit.collider.gameObject == _button)
+                {
+                    _light1.material = _lightEmission;
+                    _clearState |= Clear.FirstStageClear;
+                }
+                //----------ここまで----------
+
+
+                //----------背面にある謎解き----------　クリックした順番があってたらクリア
+                if (hit.collider.gameObject.name == _colorButtons[0])
+                {
+                    //正解のボタンを押したら、上にあるライトが順番に点く
+                    _colorButtons.RemoveAt(0);
+                    //Debug.Log(_colorButtons.Count);
+                    _lights[_lighting].material = _lightEmission;
+
+                    if (_lighting < 5)
+                    {
+                        _lighting++;
+                    }
+
+                }
+                else if (hit.collider.gameObject.name != _colorButtons[0] && hit.collider.gameObject.tag == "ColorButton")
+                {
+                    //間違ったボタンを押したら、上にあるライトが全部消える
+                    _colorButtons = _colorButton.ToList();
+                    Debug.Log(_colorButtons.Count);
+                    _lighting = 0;
+                    _lights.ForEach(light => light.material = _lightMaterial);
+                }
+
+                //クリアしたら、2個目のライトを光らせる
+                if (_colorButtons.Count == 0)
+                {
+                    _colorButtons.Add("a");
+                    _light2.material = _lightEmission;
+                    _clearState |= Clear.SecondStageClear;
+                }
+                //----------ここまで----------
+
+
+                //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
+                if (hit.collider.gameObject.name == _spriteButtons[0].ToString())
+                {
+                    //正解したらまるの画像がでてきて、次の問題が表示される
+
+                    if (_clearSprite < 2)
+                    {
+                        _clearSprite++;
+                    }
+
+                    _spriteButtons.RemoveAt(0);
+                    StartCoroutine(SpriteQuestion());
+                }
+
+                //----------ここまで----------
+
+
+                //全部の謎解いたら、ステータスが「すべての謎を解いた」になる
+                if ((_clearState & Clear.FirstStageClear) == Clear.FirstStageClear && (_clearState & Clear.SecondStageClear) == Clear.SecondStageClear && (_clearState & Clear.ThirdStageClear) == Clear.ThirdStageClear)
+                {
+                    _clearState = Clear.AllStageClear;
+                }
+
+
+                //----------ドアにある謎解き----------　全問正解したら出てくる　答えの番号を打ち込めばクリア
+                if(_clearState == Clear.AllStageClear)
+                {
+                    _lastNazo.SetActive(true);
+                    _numberKey.SetActive(true);
+                }
+
+                if(hit.collider.gameObject == _lastNazo && !_isFocused)
+                {
+                    _lastNazoBackground.SetActive(true);
+                    _isFocused = true;
+                }
+
+                if(hit.collider.gameObject == _numberKey && !_isFocused)
+                {
+
+                }
+                //----------ここまで----------
+
             }
-
-
-            //----------ここまで----------
-            //}
 
         }
 
-        //全部の謎解いたら、ステータスが「すべての謎を解いた」になる
-        if ((_clearState & Clear.FirstStageClear) == Clear.FirstStageClear && (_clearState & Clear.SecondStageClear) == Clear.SecondStageClear && (_clearState & Clear.ThirdStageClear) == Clear.ThirdStageClear)
-        {
-            _clearState = Clear.AllStageClear;
-        }
+
 
     }
 
