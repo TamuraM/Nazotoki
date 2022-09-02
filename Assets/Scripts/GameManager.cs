@@ -206,19 +206,19 @@ public class GameManager : MonoBehaviour
 
 
                 //----------ドアにある謎解き----------　全問正解したら出てくる　答えの番号を打ち込めばクリア
-                if(_clearState == Clear.AllStageClear)
+                if (_clearState == Clear.AllStageClear)
                 {
                     _lastNazo.SetActive(true);
                     _numberKey.SetActive(true);
                 }
 
-                if(hit.collider.gameObject == _lastNazo && !_isFocused)
+                if (hit.collider.gameObject == _lastNazo && !_isFocused)
                 {
                     _lastNazoBackground.SetActive(true);
                     _isFocused = true;
                 }
 
-                if(hit.collider.gameObject == _numberKey && !_isFocused)
+                if (hit.collider.gameObject == _numberKey && !_isFocused)
                 {
                     _numberKeyBackground.SetActive(true);
                     _isFocused = true;
