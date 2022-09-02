@@ -70,8 +70,10 @@ public class GameManager : MonoBehaviour
         SecondStageClear = 1 << 1,
         /// <summary>三番目の謎解けた</summary>
         ThirdStageClear = 1 << 2,
-        /// <summary>すべての謎解けた</summary>
-        AllStageClear = 1 << 3,
+        /// <summary>すべての謎解けて、最後の謎出現</summary>
+        LastStageStart = 1 << 3,
+        /// <summary>最後の謎解けた</summary>
+        LastStageClear = 1 << 4,
     }
 
     public Clear _clearState;
@@ -200,15 +202,15 @@ public class GameManager : MonoBehaviour
                 //----------ここまで----------
 
 
-                //全部の謎解いたら、ステータスが「すべての謎を解いた」になる
+                //全部の謎解いたら、最後の謎が出現
                 if ((_clearState & Clear.FirstStageClear) == Clear.FirstStageClear && (_clearState & Clear.SecondStageClear) == Clear.SecondStageClear && (_clearState & Clear.ThirdStageClear) == Clear.ThirdStageClear)
                 {
-                    _clearState = Clear.AllStageClear;
+                    _clearState = Clear.LastStageStart;
                 }
 
 
                 //----------ドアにある謎解き----------　全問正解したら出てくる　答えの番号を打ち込めばクリア
-                if (_clearState == Clear.AllStageClear)
+                if (_clearState == Clear.LastStageStart)
                 {
                     _lastNazo.SetActive(true);
                     _numberKey.SetActive(true);

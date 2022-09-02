@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public class NumberKeyBase : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Tooltip("これがついてるオブジェクトのイメージコンポーネント")] Image _image;
+    public Image Image { get => _image; set => _image = value; }
     [Tooltip("このイメージの色")] Color _imageColor;
+    public Color ImageColor { get => _imageColor; set => _imageColor = value; }
     [SerializeField] public NumberKeyController _numberKeyController;
 
     private void Awake()
@@ -22,7 +24,7 @@ public class NumberKeyBase : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         Debug.LogError("継承先の派生クラスで関数を定義してください。");
     }
 
-    public void OnPointerClick(PointerEventData eventData) // ボタンが押され、その後ドラッグ操作が入ることなくボタンが離される
+    public virtual void OnPointerClick(PointerEventData eventData) // ボタンが押され、その後ドラッグ操作が入ることなくボタンが離される
     {
 
         if(_numberKeyController.Num.Length < 4)
