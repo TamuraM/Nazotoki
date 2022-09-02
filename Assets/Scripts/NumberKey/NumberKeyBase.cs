@@ -8,7 +8,7 @@ public class NumberKeyBase : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 {
     [Tooltip("これがついてるオブジェクトのイメージコンポーネント")] Image _image;
     [Tooltip("このイメージの色")] Color _imageColor;
-    NumberKeyController _numberKeyController;
+    [SerializeField] public NumberKeyController _numberKeyController;
 
     private void Awake()
     {

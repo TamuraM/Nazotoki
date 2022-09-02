@@ -98,6 +98,8 @@ public class GameManager : MonoBehaviour
         _inputText.SetActive(false);
         _lastNazo.SetActive(false);
         _numberKey.SetActive(false);
+        _lastNazoBackground.SetActive(false);
+        _numberKeyBackground.SetActive(false);
 
         _colorButtons = _colorButton.ToList();
         _spriteButtons = _spriteButton.ToList();

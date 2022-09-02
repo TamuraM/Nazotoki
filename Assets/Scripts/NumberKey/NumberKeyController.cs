@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class NumberKeyController : MonoBehaviour
 {
     [SerializeField, Header("“ü—Í‚³‚ê‚½”š‚ğ•\¦‚·‚é")] Text _inputNumber;
-    [Tooltip("“ü—Í‚³‚ê‚½”š")] string _num;
+    [Tooltip("“ü—Í‚³‚ê‚½”š")] string _num = "";
     public string Num { get => _num; set => _num = value; }
     [Tooltip("“š‚¦‚Ì”š")] int _answer = 0123;
 
