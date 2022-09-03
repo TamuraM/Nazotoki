@@ -7,6 +7,7 @@ public class EnterKey : NumberKeyBase
 {
     [SerializeField, Header("数字入力画面")] GameObject _inputNumber;
     [SerializeField] Animator _numberKey;
+    [SerializeField, Header("ドア")] Animator _door;
 
     public override void OnPointerClick(PointerEventData eventData)
     {
@@ -26,6 +27,8 @@ public class EnterKey : NumberKeyBase
         {
             //画像の透明度を戻して、背景を消す
             Image.color = ImageColor;
+            //ドアが開く
+            _door.SetBool("EnterAnswer", true);
             _inputNumber.SetActive(false);
             GameManager.instance._isFocused = false;
             GameManager.instance._clearState = GameManager.Clear.LastStageClear;
