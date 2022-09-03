@@ -5794,6 +5794,7 @@ GameObject:
   - component: {fileID: 1439926626}
   - component: {fileID: 1439926628}
   - component: {fileID: 1439926627}
+  - component: {fileID: 1439926629}
   m_Layer: 5
   m_Name: InputNumber
   m_TagString: Untagged
@@ -5863,6 +5864,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1439926625}
   m_CullTransparentMesh: 1
+--- !u!95 &1439926629
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439926625}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b240ec0d59f51c246ab495ea06c0c4f4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1473337331
 GameObject:
   m_ObjectHideFlags: 0
@@ -7510,6 +7531,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _numberKeyController: {fileID: 1236517397}
   _inputNumber: {fileID: 422083874}
+  _numberKey: {fileID: 1439926629}
 --- !u!1 &2024835864
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class EnterKey : NumberKeyBase
 {
     [SerializeField, Header("”š“ü—Í‰æ–Ê")] GameObject _inputNumber;
+    [SerializeField] Animator _numberKey;
 
     public override void OnPointerClick(PointerEventData eventData)
     {
@@ -31,7 +32,15 @@ public class EnterKey : NumberKeyBase
         }
         else
         {
-            _numberKeyController.Num = "";
+            StartCoroutine(Wrong());
         }
+    }
+
+    IEnumerator Wrong()
+    {
+        _numberKey.SetBool("Wrong", true);
+        yield return new WaitForSeconds(0.3f);
+        _numberKeyController.Num = "";
+        _numberKey.SetBool("Wrong", false);
     }
 }
