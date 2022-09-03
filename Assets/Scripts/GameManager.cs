@@ -8,7 +8,6 @@ using System.Linq;
 /// <summary>ゲームマネージャー！！！！！！！！！</summary>
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager instance;
 
     //ドアの横にあるライト
@@ -126,80 +125,94 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log(hit.collider.gameObject.name);
 
-                //----------左側にある謎解き----------
-                //机の上の紙クリックしたら謎が拡大される
-                if (hit.collider.gameObject.name == "Nazo" && !_isFocused)
+                if((_clearState & Clear.FirstStageClear) != Clear.FirstStageClear)
                 {
-                    Debug.Log("なぞだ");
-                    _nazo.SetActive(true);
-                    _isFocused = true; ;
-                }
-
-                //タイプライターをクリックしたら入力画面が出てくる
-                if (hit.collider.gameObject.name == "Typewriter" && !_isFocused)
-                {
-                    Debug.Log("タイプライターだ");
-                    _inputText.SetActive(true);
-                    _isFocused = true; ;
-                }
-
-                //ボタンをクリックしたらクリア
-                if (hit.collider.gameObject == _button)
-                {
-                    _light1.material = _lightEmission;
-                    _clearState |= Clear.FirstStageClear;
-                }
-                //----------ここまで----------
-
-
-                //----------背面にある謎解き----------　クリックした順番があってたらクリア
-                if (hit.collider.gameObject.name == _colorButtons[0])
-                {
-                    //正解のボタンを押したら、上にあるライトが順番に点く
-                    _colorButtons.RemoveAt(0);
-                    //Debug.Log(_colorButtons.Count);
-                    _lights[_lighting].material = _lightEmission;
-
-                    if (_lighting < 5)
+                    //----------左側にある謎解き----------
+                    //机の上の紙クリックしたら謎が拡大される
+                    if (hit.collider.gameObject.name == "Nazo" && !_isFocused)
                     {
-                        _lighting++;
+                        Debug.Log("なぞだ");
+                        _nazo.SetActive(true);
+                        _isFocused = true; ;
                     }
 
-                }
-                else if (hit.collider.gameObject.name != _colorButtons[0] && hit.collider.gameObject.tag == "ColorButton")
-                {
-                    //間違ったボタンを押したら、上にあるライトが全部消える
-                    _colorButtons = _colorButton.ToList();
-                    Debug.Log(_colorButtons.Count);
-                    _lighting = 0;
-                    _lights.ForEach(light => light.material = _lightMaterial);
-                }
-
-                //クリアしたら、2個目のライトを光らせる
-                if (_colorButtons.Count == 0)
-                {
-                    _colorButtons.Add("a");
-                    _light2.material = _lightEmission;
-                    _clearState |= Clear.SecondStageClear;
-                }
-                //----------ここまで----------
-
-
-                //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
-                if (hit.collider.gameObject.name == _spriteButtons[0].ToString())
-                {
-                    //正解したらまるの画像がでてきて、次の問題が表示される
-
-                    if (_clearSprite < 2)
+                    //タイプライターをクリックしたら入力画面が出てくる
+                    if (hit.collider.gameObject.name == "Typewriter" && !_isFocused)
                     {
+                        Debug.Log("タイプライターだ");
+                        _inputText.SetActive(true);
+                        _isFocused = true; ;
+                    }
+
+                    //ボタンをクリックしたらクリア
+                    if (hit.collider.gameObject == _button)
+                    {
+                        _light1.material = _lightEmission;
+                        _clearState |= Clear.FirstStageClear;
+                    }
+                    //----------ここまで----------
+                }
+
+                if((_clearState & Clear.SecondStageClear) != Clear.SecondStageClear)
+                {
+                    //----------背面にある謎解き----------　クリックした順番があってたらクリア
+                    if (hit.collider.gameObject.name == _colorButtons[0])
+                    {
+                        //正解のボタンを押したら、上にあるライトが順番に点く
+                        _colorButtons.RemoveAt(0);
+                        //Debug.Log(_colorButtons.Count);
+                        _lights[_lighting].material = _lightEmission;
+
+                        if (_lighting < 5)
+                        {
+                            _lighting++;
+                        }
+
+                    }
+                    else if (hit.collider.gameObject.name != _colorButtons[0] && hit.collider.gameObject.tag == "ColorButton")
+                    {
+                        //間違ったボタンを押したら、上にあるライトが全部消える
+                        _colorButtons = _colorButton.ToList();
+                        Debug.Log(_colorButtons.Count);
+                        _lighting = 0;
+                        _lights.ForEach(light => light.material = _lightMaterial);
+                    }
+
+                    //クリアしたら、2個目のライトを光らせる
+                    if (_colorButtons.Count == 0)
+                    {
+                        _colorButtons.Add("a");
+                        _light2.material = _lightEmission;
+                        _clearState |= Clear.SecondStageClear;
+                    }
+                    //----------ここまで----------
+                }
+
+                if((_clearState & Clear.ThirdStageClear) != Clear.ThirdStageClear)
+                {
+                    //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
+                    if (hit.collider.gameObject == _spriteButtons[0])
+                    {
+                        //正解したらまるの画像がでてきて、次の問題が表示される
                         _clearSprite++;
+                        _spriteButtons.RemoveAt(0);
+                        StartCoroutine(SpriteQuestionSucces());
+                    }
+                    else
+                    {
+                        _clearSprite = 0;
+                        _spriteButtons = _spriteButton.ToList();
+                        StartCoroutine(SpriteQuestionWrong());
                     }
 
-                    _spriteButtons.RemoveAt(0);
-                    StartCoroutine(SpriteQuestion());
+                    if (_spriteButtons.Count == 0)
+                    {
+                        _spriteButtons.Add(this.gameObject);
+                        _light3.material = _lightEmission;
+                        _clearState |= Clear.ThirdStageClear;
+                    }
+                    //----------ここまで----------
                 }
-
-                //----------ここまで----------
 
 
                 //全部の謎解いたら、最後の謎が出現
@@ -237,11 +250,17 @@ public class GameManager : MonoBehaviour
 
     }
 
-    IEnumerator SpriteQuestion()
+    IEnumerator SpriteQuestionSucces()
     {
         _monitor.sprite = _circle;
         yield return new WaitForSeconds(1.0f);
         _monitor.sprite = _questions[_clearSprite];
     }
 
+    IEnumerator SpriteQuestionWrong()
+    {
+        _monitor.sprite = _cross;
+        yield return new WaitForSeconds(1.0f);
+        _monitor.sprite = _questions[_clearSprite];
+    }
 }
