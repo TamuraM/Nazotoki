@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>入力されたテキストが正解かどうか判定するスクリプト</summary>
 public class JudgeButton : ButtonBase
@@ -23,9 +24,9 @@ public class JudgeButton : ButtonBase
         //入力されたテキストが正解かどうか判定する
         if(_inputText.text == seikai)
         {
-            //正解だったらレバーが現れる
-            _button.SetActive(true);
+            //正解だったらボタンが現れる
             _inputTextBackground.SetActive(false);
+            _button.SetActive(true);
             GameManager.instance._isFocused = false;
         }
         else
