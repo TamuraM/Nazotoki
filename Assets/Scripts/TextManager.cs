@@ -18,5 +18,12 @@ public class TextManager : MonoBehaviour
     private void Update()
     {
 
+        if(GameManager.instance._clearState == GameManager.Clear.LastStageClear)
+        {
+            _textBox.SetActive(true);
+            //ålŒö‚ª­‚µ˜b‚·
+            GameManager.instance._gameMode = GameManager.GameMode.GameClear;
+        }
+
     }
 }

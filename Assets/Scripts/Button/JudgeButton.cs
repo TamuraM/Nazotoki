@@ -27,6 +27,7 @@ public class JudgeButton : ButtonBase
             //³‰ğ‚¾‚Á‚½‚çƒ{ƒ^ƒ“‚ªŒ»‚ê‚é
             _inputTextBackground.SetActive(false);
             _button.SetActive(true);
+            _button.GetComponent<SpriteRenderer>().DOFade(255, 1.0f);
             GameManager.instance._isFocused = false;
         }
         else

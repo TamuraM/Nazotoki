@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     //右側の謎関係
     [SerializeField, Header("モニターの画像")] SpriteRenderer _monitor;
     [SerializeField, Header("謎の画像たちリスト")] Sprite[] _questions = new Sprite[3];
+
     [SerializeField, Header("ボタンを押す順番に入れる")] GameObject[] _spriteButton = new GameObject[3];
     [Tooltip("押すボタンのList")] List<GameObject> _spriteButtons = new();
     [SerializeField, Header("まるの画像")] Sprite _circle; //正解の時

@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class NumberKeyBase : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Tooltip("これがついてるオブジェクトのイメージコンポーネント")] Image _image;
-    public Image Image { get => _image; set => _image = value; }
+    protected Image Image { get => _image; set => _image = value; }
     [Tooltip("このイメージの色")] Color _imageColor;
-    public Color ImageColor { get => _imageColor; set => _imageColor = value; }
+    protected Color ImageColor { get => _imageColor; set => _imageColor = value; }
     [SerializeField] public NumberKeyController _numberKeyController;
 
     private void Awake()

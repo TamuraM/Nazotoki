@@ -8,10 +8,10 @@ public class ButtonBase : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     [Tooltip("これがついてるオブジェクトのイメージコンポーネント")] Image _image;
     [Tooltip("このイメージの色")] Color _imageColor;
 
-    public Image Image
+    protected Image Image
     { get => _image; set => _image = value; }
 
-    public Color ImageColor
+    protected Color ImageColor
     { get => _imageColor; set => _imageColor = value; }
 
     private void Awake()
