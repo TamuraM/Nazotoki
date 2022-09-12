@@ -6,6 +6,7 @@ using UnityEngine;
 public class RightButton : ButtonBase
 {
     [Tooltip("メインカメラオブジェクト")] GameObject _mainCamera;
+    [SerializeField] ThinkingButton _thinkingButton;
 
     private void Start()
     {
@@ -14,6 +15,7 @@ public class RightButton : ButtonBase
 
     public override void Click()
     {
+        _thinkingButton.AngleChange = true;
         _mainCamera.transform.Rotate(0, 90, 0);
     }
 }

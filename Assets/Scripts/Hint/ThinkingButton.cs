@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>考えるボタン　ヒントの管理</summary>
 public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Tooltip("考えるボタン")] Image _image;
+    [Tooltip("元の色")] Color _imageColor;
     [SerializeField, Header("メインカメラ")] GameObject _mainCamera;
     [Tooltip("カメラの角度")] float _angle;
-    //[SerializeField, Header("テキストボックス")] GameObject _textBox;
+    bool _change = true;
+    public bool AngleChange { get => _change; set => _change = value; }
+    [SerializeField, Header("テキストボックス"), Tooltip("テキストボックスのゲームオブジェクト")] GameObject _textBox;
+    [SerializeField, Header("ヒントテキスト"), Tooltip("ヒントを表示するテキスト")] Text _hintText;
+    [SerializeField, Header("ヒント.text"), Tooltip("ヒントが書かれてるテキスト")] TextAsset _hintTextFile;
+    string[] _hint;
+    bool _endReadHint;
 
-    //どのヒントを見たのか情報
-    public enum Hint
+    /// <summary>どのヒントを見たのか情報</summary>
+    public enum HintCheckList
     {
         LeftHint1 = 1 << 0,
         LeftHint2 = 1 << 1,
@@ -25,174 +33,151 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
         DoorHint2 = 1 << 7,
     }
 
-    public Hint _hint;
+    public HintCheckList _hintCheckList;
 
     void Start()
     {
         _image = GetComponent<Image>();
-        //_angle = _mainCamera.GetComponent<Transform>().rotation.y;
+        _imageColor = GetComponent<Image>().color;
+        _textBox.SetActive(false);
+        _hint = _hintTextFile.text.Split(char.Parse("\n"));
+        _hintText.text = "";
     }
 
     void Update()
     {
-        _angle = _mainCamera.transform.rotation.y;
+        _angle = _mainCamera.transform.rotation.eulerAngles.y;
 
-        //ドア側を向いている時
-        if(_angle == 0)
+        if(_change)
         {
 
-            //ラス謎が出てたら普通
-            if(GameManager.instance._clearState == GameManager.Clear.LastStageStart)
+            //ドア側を向いている時
+            if (_angle == 0)
             {
-                _image.color = new Color(255, 255, 255, 255);
+
+                //ラス謎が出てたら普通
+                if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
+                {
+                    _image.color = _imageColor;
+                }
+                //出てなかったら半透明
+                else
+                {
+                    _image.color = _imageColor - new Color(0, 0, 0, 0.5f);
+                }
+
             }
-            //出てなかったら半透明
+            //それ以外では普通
             else
             {
-                _image.color = new Color(255, 255, 255, 50);
+                _image.color = _imageColor;
             }
 
+            _change = false;
         }
-        //それ以外では普通
-        else
+        
+        //ヒントを読み終わっていて、左クリックしたらテキストボックスが消える
+        if(_endReadHint && Input.GetKeyDown(KeyCode.Mouse0))
         {
-            _image.color = new Color(255, 255, 255, 255);
+            _hintText.text = "";
+            _textBox.SetActive(false);
+            GameManager.instance._gameMode = GameManager.GameMode.PlayGame;
+            _endReadHint = false;
         }
 
     }
 
+    /// <summary>クリックされたら官らの角度に合わせてヒントを表示</summary>
+    /// <param name="eventData"></param>
     public void OnPointerClick(PointerEventData eventData)
     {
-        GameManager.instance._gameMode = GameManager.GameMode.Thinking;
+        Debug.Log(_angle);
 
-        //左側の謎
-        if(_angle == -90)
+        if(GameManager.instance._gameMode == GameManager.GameMode.PlayGame)
         {
 
-            //ヒントを見たことがなければ第1ヒント表示
-            if((_hint & Hint.LeftHint1) != Hint.LeftHint1)
+            //左側の謎
+            if (_angle == 270)
             {
-                _hint |= Hint.LeftHint1;
+                    Debug.Log("ひだり");
+                    Thinking(HintCheckList.LeftHint1, HintCheckList.LeftHint2, GameManager.Clear.FirstStageClear, _hint[0], _hint[1]);                
             }
-            //見たことがあれば第2ヒント表示
-            else if((_hint & Hint.LeftHint1) == Hint.LeftHint1)
+            //後ろ側の謎
+            else if (_angle == 180)
             {
-                _hint |= Hint.LeftHint2;
+                Debug.Log("うしろ");
+                Thinking(HintCheckList.BackHint1, HintCheckList.BackHint2, GameManager.Clear.SecondStageClear, _hint[2], _hint[3]);
             }
-            //どっちも見たことあったら「もう考えることはないようだ」と表示
-            else if((_hint & Hint.LeftHint1) == Hint.LeftHint1 && (_hint & Hint.LeftHint2) == Hint.LeftHint2)
+            //右側の謎
+            else if (_angle ==　90)
             {
-                //テキスト変更
+                Debug.Log("みぎ");
+                Thinking(HintCheckList.RightHint1, HintCheckList.RightHint2, GameManager.Clear.ThirdStageClear, _hint[4], _hint[5]);
             }
-
-        }
-        //後ろ側の謎
-        else if(_angle == 180)
-        {
-
-            //ヒントを見たことがなければ第1ヒント表示
-            if ((_hint & Hint.BackHint1) != Hint.BackHint1)
+            //ドア側の謎
+            else if (_angle == 0)
             {
-                _hint |= Hint.BackHint1;
-            }
-            //見たことがあれば第2ヒント表示
-            else if ((_hint & Hint.BackHint1) == Hint.BackHint1)
-            {
-                _hint |= Hint.BackHint2;
-            }
-            //どっちも見たことあったら「もう考えることはないようだ」と表示
-            else if ((_hint & Hint.BackHint1) == Hint.BackHint1 && (_hint & Hint.BackHint2) == Hint.BackHint2)
-            {
-                //テキスト変更
-            }
-
-        }
-        //右側の謎
-        else if(_angle == 90)
-        {
-
-            //ヒントを見たことがなければ第1ヒント表示
-            if ((_hint & Hint.RightHint1) != Hint.RightHint1)
-            {
-                _hint |= Hint.RightHint1;
-            }
-            //見たことがあれば第2ヒント表示
-            else if ((_hint & Hint.RightHint1) == Hint.RightHint1)
-            {
-                _hint |= Hint.RightHint2;
-            }
-            //どっちも見たことあったら「もう考えることはないようだ」と表示
-            else if ((_hint & Hint.RightHint1) == Hint.RightHint1 && (_hint & Hint.RightHint2) == Hint.RightHint2)
-            {
-                //テキスト変更
-            }
-
-        }
-        //ドア側の謎
-        else
-        {
-            //ラス謎が出てる時だけ
-            if(GameManager.instance._clearState == GameManager.Clear.LastStageStart)
-            {
-
-                //ヒントを見たことがなければ第1ヒント表示
-                if ((_hint & Hint.DoorHint1) != Hint.DoorHint1)
+                Debug.Log("ドア");
+                //ラス謎が出てる時だけ
+                if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
                 {
-                    _hint |= Hint.DoorHint1;
-                }
-                //見たことがあれば第2ヒント表示
-                else if ((_hint & Hint.DoorHint1) == Hint.DoorHint1)
-                {
-                    _hint |= Hint.DoorHint2;
-                }
-                //どっちも見たことあったら「もう考えることはないようだ」と表示
-                else if ((_hint & Hint.DoorHint1) == Hint.DoorHint1 && (_hint & Hint.DoorHint2) == Hint.DoorHint2)
-                {
-                    //テキスト変更
+                    Thinking(HintCheckList.DoorHint1, HintCheckList.DoorHint2, GameManager.Clear.LastStageClear, _hint[6], _hint[7]);
                 }
 
             }
 
         }
+        
 
     }
 
+    /// <summary>マウスが乗ったら色を暗くする</summary>
+    /// <param name="eventData"></param>
     public void OnPointerEnter(PointerEventData eventData)
     {
 
-        //ドア側を向いている時
-        if (_angle == 0)
+        if(GameManager.instance._gameMode == GameManager.GameMode.PlayGame)
         {
-            //ラス謎が出てたら少し暗く
-            if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
+
+            //ドア側を向いている時
+            if (_angle == 0)
             {
-                _image.color = new Color(200, 200, 200, 255);
+
+                //ラス謎が出てたら少し暗く
+                if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
+                {
+                    _image.color = _imageColor - new Color(55 / 255f, 55 / 255f, 55 / 255f, 0);
+                }
+                //出てなかったらそのまま
+                else
+                {
+                    return;
+                }
+
             }
-            //出てなかったらそのまま
+            //それ以外では少し暗く
             else
             {
-                return;
+                _image.color = _imageColor - new Color(55 / 255f, 55 / 255f, 55 / 255f, 0);
             }
 
-        }
-        //それ以外では少し暗く
-        else
-        {
-            _image.color = new Color(200, 200, 200, 255);
         }
 
     }
 
+    /// <summary>マウスが出たら色を戻す</summary>
+    /// <param name="eventData"></param>
     public void OnPointerExit(PointerEventData eventData)
     {
 
         //ドア側を向いている時
         if (_angle == 0)
         {
+
             //ラス謎が出てたら元の色に戻る
             if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
             {
-                _image.color = new Color(255, 255, 255, 255);
+                _image.color = _imageColor;
             }
             //出てなかったらそのまま
             else
@@ -204,9 +189,50 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
         //それ以外では元の色に戻る
         else
         {
-            _image.color = new Color(255, 255, 255, 255);
+            _image.color = _imageColor;
         }
 
     }
 
+    /// <summary>考えるボタンを押したときにヒントを表示する</summary>
+    /// <param name="first"></param>
+    /// <param name="second"></param>
+    public void Thinking(HintCheckList first, HintCheckList second, GameManager.Clear clear, string hint1, string hint2)
+    {
+
+        if(GameManager.instance._clearState != clear)
+        {
+            GameManager.instance._gameMode = GameManager.GameMode.Thinking;
+            _image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
+
+            //ヒントを見たことがなければ第1ヒント表示
+            if ((_hintCheckList & first) != first)
+            {
+                _hintCheckList |= first;
+                ShowHint(hint1);
+            }
+            //見たことがあれば第2ヒント表示
+            else if ((_hintCheckList & first) == first && (_hintCheckList & second) != second)
+            {
+                _hintCheckList |= second;
+                ShowHint(hint2);
+            }
+            //どっちも見たことあったら「もう考えることはないようだ」と表示
+            else if ((_hintCheckList & first) == first && (_hintCheckList & second) == second)
+            {
+                //テキスト変更
+                ShowHint("もう考えることはないようだ");
+            }
+
+        }
+
+    }
+
+    /// <summary>ヒントテキストを表示する</summary>
+    /// <param name="s"></param>
+    public void ShowHint(string s)
+    {
+        _textBox.SetActive(true);
+        _hintText.DOText(s, 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+    }
 }

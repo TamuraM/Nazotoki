@@ -42,7 +42,7 @@ public class NumberKeyBase : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     /// <param name="eventData"></param>
     public void OnPointerEnter(PointerEventData eventData) //ボタンの範囲にマウスカーソルが入る
     {
-        _image.color -= new Color(200, 200, 200);
+        _image.color = new Color(200/255f, 200/255f, 200/255f, 1);
     }
 
     /// <summary>ボタンの上からカーソルがなくなったら画像を元に戻す</summary>

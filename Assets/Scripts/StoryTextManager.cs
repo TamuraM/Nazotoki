@@ -53,7 +53,8 @@ public class StoryTextManager : MonoBehaviour
                 if (!_goStart)
                 {
                     _goStart = true;
-                    StartCoroutine(ShowStartStory());
+                    //StartCoroutine(ShowStartStory());
+                    _endStartStory = true; //テスト用
                 }
 
             }

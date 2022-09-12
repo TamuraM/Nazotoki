@@ -35,7 +35,7 @@ public class ButtonBase : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     /// <param name="eventData"></param>
     public void OnPointerEnter(PointerEventData eventData) //ボタンの範囲にマウスカーソルが入る
     {
-        _image.color = _imageColor +  new Color(0, 0, 0, 105);
+        _image.color = _imageColor +  new Color(0, 0, 0, 105/255f);
     }
 
     /// <summary>ボタンの上からカーソルがなくなったら透明度を上げる</summary>
