@@ -11,6 +11,7 @@ public class EnterKey : NumberKeyBase
 
     public override void OnPointerClick(PointerEventData eventData)
     {
+
         if (_numberKeyController.Num.Length == 4)
         {
             Click();
@@ -19,24 +20,28 @@ public class EnterKey : NumberKeyBase
         {
             return;
         }
+
     }
 
     public override void Click()
     {
+
         if (_numberKeyController.Num == _numberKeyController.Answer)
         {
             //画像の透明度を戻して、背景を消す
             Image.color = ImageColor;
-            //ドアが開く
-            _door.SetBool("EnterAnswer", true);
             _inputNumber.SetActive(false);
             GameManager.instance._isFocused = false;
+            //ドアが開く
+            _door.SetBool("EnterAnswer", true);
             GameManager.instance._clearState = GameManager.Clear.LastStageClear;
+            GameManager.instance._gameMode = GameManager.GameMode.GameClear;
         }
         else
         {
             StartCoroutine(Wrong());
         }
+
     }
 
     IEnumerator Wrong()
@@ -46,4 +51,5 @@ public class EnterKey : NumberKeyBase
         _numberKeyController.Num = "";
         _numberKey.SetBool("Wrong", false);
     }
+
 }

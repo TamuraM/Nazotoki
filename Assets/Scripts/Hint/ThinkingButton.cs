@@ -19,6 +19,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     [SerializeField, Header("ヒント.text"), Tooltip("ヒントが書かれてるテキスト")] TextAsset _hintTextFile;
     string[] _hint;
     bool _endReadHint;
+    [SerializeField, Header("ヒントボタン")] List<GameObject> _hintButtons;
 
     /// <summary>どのヒントを見たのか情報</summary>
     public enum HintCheckList
@@ -75,9 +76,101 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
             _change = false;
         }
-        
+
+        //------ヒントボタンの表示------
+        //左側の謎
+        if (_angle == 270)
+        {
+
+            if((_hintCheckList & HintCheckList.LeftHint1) == HintCheckList.LeftHint1)
+            {
+                _hintButtons[0].SetActive(true);
+            }
+            
+            if((_hintCheckList & HintCheckList.LeftHint2) == HintCheckList.LeftHint2)
+            {
+                _hintButtons[1].SetActive(true);
+            }
+
+        }
+        else
+        {
+            _hintButtons[0].SetActive(false);
+            _hintButtons[1].SetActive(false);
+        }
+
+        //後ろ側の謎
+        if (_angle == 180)
+        {
+
+            if ((_hintCheckList & HintCheckList.BackHint1) == HintCheckList.BackHint1)
+            {
+                _hintButtons[2].SetActive(true);
+            }
+            
+            if ((_hintCheckList & HintCheckList.LeftHint2) == HintCheckList.LeftHint2)
+            {
+                _hintButtons[3].SetActive(true);
+            }
+
+        }
+        else
+        {
+            _hintButtons[2].SetActive(false);
+            _hintButtons[3].SetActive(false);
+        }
+
+        //右側の謎
+        if (_angle == 90)
+        {
+            
+            if ((_hintCheckList & HintCheckList.RightHint1) == HintCheckList.RightHint1)
+            {
+                _hintButtons[4].SetActive(true);
+            }
+            
+            if ((_hintCheckList & HintCheckList.RightHint2) == HintCheckList.RightHint2)
+            {
+                _hintButtons[5].SetActive(true);
+            }
+
+        }
+        else
+        {
+            _hintButtons[4].SetActive(false);
+            _hintButtons[5].SetActive(false);
+        }
+
+        //ドア側の謎
+        if (_angle == 0)
+        {
+
+            //ラス謎が出てる時だけ
+            if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
+            {
+
+                if ((_hintCheckList & HintCheckList.DoorHint1) == HintCheckList.DoorHint1)
+                {
+                    _hintButtons[6].SetActive(true);
+                }
+
+                if ((_hintCheckList & HintCheckList.DoorHint2) == HintCheckList.DoorHint2)
+                {
+                    _hintButtons[7].SetActive(true);
+                }
+
+            }
+
+        }
+        else
+        {
+            _hintButtons[6].SetActive(false);
+            _hintButtons[7].SetActive(false);
+        }
+        //------ここまで------
+
         //ヒントを読み終わっていて、左クリックしたらテキストボックスが消える
-        if(_endReadHint && Input.GetKeyDown(KeyCode.Mouse0))
+        if (_endReadHint && Input.GetKeyDown(KeyCode.Mouse0))
         {
             _hintText.text = "";
             _textBox.SetActive(false);
@@ -99,29 +192,29 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
             //左側の謎
             if (_angle == 270)
             {
-                    Debug.Log("ひだり");
-                    Thinking(HintCheckList.LeftHint1, HintCheckList.LeftHint2, GameManager.Clear.FirstStageClear, _hint[0], _hint[1]);                
+                   // Debug.Log("ひだり");
+                    Thinking(HintCheckList.LeftHint1, HintCheckList.LeftHint2, GameManager.Clear.FirstStageClear, _hint[0], _hint[1], _hintButtons[0], _hintButtons[1]);                
             }
             //後ろ側の謎
             else if (_angle == 180)
             {
-                Debug.Log("うしろ");
-                Thinking(HintCheckList.BackHint1, HintCheckList.BackHint2, GameManager.Clear.SecondStageClear, _hint[2], _hint[3]);
+                //Debug.Log("うしろ");
+                Thinking(HintCheckList.BackHint1, HintCheckList.BackHint2, GameManager.Clear.SecondStageClear, _hint[2], _hint[3], _hintButtons[2], _hintButtons[3]);
             }
             //右側の謎
             else if (_angle ==　90)
             {
-                Debug.Log("みぎ");
-                Thinking(HintCheckList.RightHint1, HintCheckList.RightHint2, GameManager.Clear.ThirdStageClear, _hint[4], _hint[5]);
+                //Debug.Log("みぎ");
+                Thinking(HintCheckList.RightHint1, HintCheckList.RightHint2, GameManager.Clear.ThirdStageClear, _hint[4], _hint[5], _hintButtons[4], _hintButtons[5]);
             }
             //ドア側の謎
             else if (_angle == 0)
             {
-                Debug.Log("ドア");
+                //Debug.Log("ドア");
                 //ラス謎が出てる時だけ
                 if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
                 {
-                    Thinking(HintCheckList.DoorHint1, HintCheckList.DoorHint2, GameManager.Clear.LastStageClear, _hint[6], _hint[7]);
+                    Thinking(HintCheckList.DoorHint1, HintCheckList.DoorHint2, GameManager.Clear.LastStageClear, _hint[6], _hint[7], _hintButtons[6], _hintButtons[7]);
                 }
 
             }
@@ -197,7 +290,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     /// <summary>考えるボタンを押したときにヒントを表示する</summary>
     /// <param name="first"></param>
     /// <param name="second"></param>
-    public void Thinking(HintCheckList first, HintCheckList second, GameManager.Clear clear, string hint1, string hint2)
+    public void Thinking(HintCheckList first, HintCheckList second, GameManager.Clear clear, string hint1, string hint2, GameObject hint1buttn, GameObject hint2buttn)
     {
 
         if(GameManager.instance._clearState != clear)
@@ -208,20 +301,19 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
             //ヒントを見たことがなければ第1ヒント表示
             if ((_hintCheckList & first) != first)
             {
-                _hintCheckList |= first;
-                ShowHint(hint1);
+                ShowHint(hint1, first, hint1buttn);
             }
             //見たことがあれば第2ヒント表示
             else if ((_hintCheckList & first) == first && (_hintCheckList & second) != second)
             {
-                _hintCheckList |= second;
-                ShowHint(hint2);
+                ShowHint(hint2, second, hint2buttn);
             }
             //どっちも見たことあったら「もう考えることはないようだ」と表示
             else if ((_hintCheckList & first) == first && (_hintCheckList & second) == second)
             {
                 //テキスト変更
-                ShowHint("もう考えることはないようだ");
+                _textBox.SetActive(true);
+                _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
             }
 
         }
@@ -230,9 +322,9 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     /// <summary>ヒントテキストを表示する</summary>
     /// <param name="s"></param>
-    public void ShowHint(string s)
+    public void ShowHint(string s, HintCheckList hintCheckList = default , GameObject hintbutton = default)
     {
         _textBox.SetActive(true);
-        _hintText.DOText(s, 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+        _hintText.DOText(s, 1.5f).SetEase(Ease.Linear).OnComplete(() => { _endReadHint = true; _hintCheckList |= hintCheckList; hintbutton.SetActive(true); }).SetAutoKill();
     }
 }

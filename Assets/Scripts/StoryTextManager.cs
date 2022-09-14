@@ -16,16 +16,19 @@ public class StoryTextManager : MonoBehaviour
     bool _endStartStory = false;
     [SerializeField, Tooltip("クリア時のストーリー")] TextAsset _clearStory;
     string[] _clear;
-    bool _goClear = false;
+    bool _goEnd;
     [SerializeField, Tooltip("ゲームオーバー時のストーリー")] TextAsset _gameoverStory;
     string[] _gameover;
-    bool _goGameover = false;
-
+    [SerializeField, Header("リトライボタン")] GameObject _retryButton;
+    bool _goRetry;
 
     void Start()
     {
+        _retryButton.SetActive(false);
         _storyText = _storyText.GetComponent<Text>();
         _start = _startStory.text.Split(char.Parse("\n"));
+        _clear = _clearStory.text.Split(char.Parse("\n"));
+        _gameover = _gameoverStory.text.Split(char.Parse("\n"));
         _storyText.text = "";
     }
 
@@ -37,24 +40,11 @@ public class StoryTextManager : MonoBehaviour
             if (!_endStartStory)
             {
 
-                //foreach (var s in _start)
-                //{
-                //    _storyText.text = $"{_storyText.text}{s}\n";
-                //}
-
-                //_endStartStory = true;
-
-                //if (!_goStart)
-                //{
-                //    _goStart = true;
-                //    _storyText.DOText(_startStory.text, 10.0f).SetEase(Ease.Linear).OnComplete(() => _endStartStory = true).SetAutoKill();
-                //}
-
                 if (!_goStart)
                 {
                     _goStart = true;
-                    //StartCoroutine(ShowStartStory());
-                    _endStartStory = true; //テスト用
+                    StartCoroutine(ShowStartStory());
+                    //_endStartStory = true; //テスト用
                 }
 
             }
@@ -71,25 +61,37 @@ public class StoryTextManager : MonoBehaviour
         //ゲームクリアしたらエンディングストーリーを表示
         if (GameManager.instance._gameMode == GameManager.GameMode.GameClear)
         {
-            _storyPanel.SetActive(true);
-            if (!_goClear)
-            {
-                _goClear = true;
-                _storyPanel.GetComponent<Image>().DOFade(255, 4.0f).SetEase(Ease.Linear).SetDelay(2.0f).SetAutoKill();
-            }
+
             //エンディング表示
+            if (!_goEnd)
+            {
+                _goEnd = true;
+                StartCoroutine(ShowEndStory());
+            }
+
         }
 
         //時間切れになったらバッドエンドストーリーを表示
         if (GameManager.instance._gameMode == GameManager.GameMode.GameOver)
         {
-            _storyPanel.SetActive(true);
-            if (!_goGameover)
+
+            //バッドエンド表示
+            if (!_goEnd)
             {
-                _goGameover = true;
-                _storyPanel.GetComponent<Image>().DOFade(255, 2.0f).SetEase(Ease.Linear).SetDelay(1.0f);
+                _goEnd = true;
+                StartCoroutine(ShowGameoverStory());
             }
+
         }
+
+        //リトライボタンをフェードインしたい
+        if (_goRetry)
+        {
+            _goRetry = false;
+            _retryButton.SetActive(true);
+            _retryButton.GetComponent<Image>().DOFade(1.0f,1.0f).SetEase(Ease.Linear);
+        }
+
     }
 
     IEnumerator ShowStartStory()
@@ -97,11 +99,55 @@ public class StoryTextManager : MonoBehaviour
 
         foreach (var s in _start)
         {
-            //_storyText.DOText($"{_storyText.text}{s}", 3.0f).SetEase(Ease.Linear).SetAutoKill();
-            yield return _storyText.DOText($"{_storyText.text}{s}", 3.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-            _storyText.text = $"{_storyText.text}\n";
+
+            if (s != "空白")
+            {
+                yield return _storyText.DOText($"{_storyText.text}{s}", 3.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+                _storyText.text = $"{_storyText.text}\n";
+            }
+
         }
 
         _endStartStory = true;
+    }
+
+    IEnumerator ShowEndStory()
+    {
+        yield return new WaitForSeconds(2.0f);
+        _storyPanel.SetActive(true);
+        yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+
+        foreach (var s in _clear)
+        {
+
+            if (s != "空白")
+            {
+                _storyText.text = $"{_storyText.text}\n";
+                yield return _storyText.DOText($"{_storyText.text}{s}", 3.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+            }
+
+        }
+
+        _goRetry = true;
+    }
+
+    IEnumerator ShowGameoverStory()
+    {
+        yield return new WaitForSeconds(2.0f);
+        _storyPanel.SetActive(true);
+        yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+
+        foreach (var s in _gameover)
+        {
+
+            if (s != "空白")
+            {
+                yield return _storyText.DOText($"{_storyText.text}{s}", 3.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+                _storyText.text = $"{_storyText.text}\n";
+            }
+
+        }
+
+        _goRetry = true;
     }
 }

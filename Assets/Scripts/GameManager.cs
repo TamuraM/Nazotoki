@@ -124,9 +124,9 @@ public class GameManager : MonoBehaviour
         {
             if (Physics.Raycast(ray, out hit, 10.0f, 3) && Input.GetMouseButtonDown(0))
             {
-                Debug.Log(hit.collider.gameObject.name);
+                //Debug.Log(hit.collider.gameObject.name);
 
-                if((_clearState & Clear.FirstStageClear) != Clear.FirstStageClear)
+                if ((_clearState & Clear.FirstStageClear) != Clear.FirstStageClear)
                 {
                     //----------左側にある謎解き----------
                     //机の上の紙クリックしたら謎が拡大される
@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
                     //----------ここまで----------
                 }
 
-                if((_clearState & Clear.SecondStageClear) != Clear.SecondStageClear)
+                if ((_clearState & Clear.SecondStageClear) != Clear.SecondStageClear)
                 {
                     //----------背面にある謎解き----------　クリックした順番があってたらクリア
                     if (hit.collider.gameObject.name == _colorButtons[0])
@@ -189,7 +189,7 @@ public class GameManager : MonoBehaviour
                     //----------ここまで----------
                 }
 
-                if((_clearState & Clear.ThirdStageClear) != Clear.ThirdStageClear)
+                if ((_clearState & Clear.ThirdStageClear) != Clear.ThirdStageClear)
                 {
                     //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
                     if (hit.collider.gameObject == _spriteButtons[0])
@@ -223,25 +223,30 @@ public class GameManager : MonoBehaviour
                 }
 
 
-                //----------ドアにある謎解き----------　全問正解したら出てくる　答えの番号を打ち込めばクリア
-                if (_clearState == Clear.LastStageStart)
+                if ((_clearState & Clear.LastStageClear) != Clear.LastStageClear)
                 {
-                    _lastNazo.SetActive(true);
-                    _numberKey.SetActive(true);
-                }
 
-                if (hit.collider.gameObject == _lastNazo && !_isFocused)
-                {
-                    _lastNazoBackground.SetActive(true);
-                    _isFocused = true;
-                }
+                    //----------ドアにある謎解き----------　全問正解したら出てくる　答えの番号を打ち込めばクリア
+                    if (_clearState == Clear.LastStageStart)
+                    {
+                        _lastNazo.SetActive(true);
+                        _numberKey.SetActive(true);
+                    }
 
-                if (hit.collider.gameObject == _numberKey && !_isFocused)
-                {
-                    _numberKeyBackground.SetActive(true);
-                    _isFocused = true;
+                    if (hit.collider.gameObject == _lastNazo && !_isFocused)
+                    {
+                        _lastNazoBackground.SetActive(true);
+                        _isFocused = true;
+                    }
+
+                    if (hit.collider.gameObject == _numberKey && !_isFocused)
+                    {
+                        _numberKeyBackground.SetActive(true);
+                        _isFocused = true;
+                    }
+                    //----------ここまで----------
+                    
                 }
-                //----------ここまで----------
 
             }
 
@@ -254,14 +259,14 @@ public class GameManager : MonoBehaviour
     IEnumerator SpriteQuestionSucces()
     {
         _monitor.sprite = _circle;
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.5f);
         _monitor.sprite = _questions[_clearSprite];
     }
 
     IEnumerator SpriteQuestionWrong()
     {
         _monitor.sprite = _cross;
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.5f);
         _monitor.sprite = _questions[_clearSprite];
     }
 }

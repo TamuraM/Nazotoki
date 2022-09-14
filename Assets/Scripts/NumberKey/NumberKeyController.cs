@@ -9,7 +9,7 @@ public class NumberKeyController : MonoBehaviour
     [SerializeField, Header("“ü—Í‚³‚ê‚½”Žš‚ð•\Ž¦‚·‚é")] Text _inputNumber;
     [Tooltip("“ü—Í‚³‚ê‚½”Žš")] string _num = "";
     public string Num { get => _num; set => _num = value; }
-    [Tooltip("“š‚¦‚Ì”Žš")] string _answer = "0123";
+    [Tooltip("“š‚¦‚Ì”Žš")] string _answer = "2965";
     public string Answer { get => _answer; }
 
     private void Update()

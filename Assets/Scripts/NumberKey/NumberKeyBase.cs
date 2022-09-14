@@ -26,8 +26,9 @@ public class NumberKeyBase : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     public virtual void OnPointerClick(PointerEventData eventData) // ボタンが押され、その後ドラッグ操作が入ることなくボタンが離される
     {
+        _image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
 
-        if(_numberKeyController.Num.Length < 4)
+        if (_numberKeyController.Num.Length < 4)
         {
             Click();
         }
