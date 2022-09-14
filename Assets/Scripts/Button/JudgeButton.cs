@@ -8,7 +8,7 @@ using DG.Tweening;
 public class JudgeButton : ButtonBase
 {
     [Tooltip("入力されたテキスト")] Text _inputText;
-    [Tooltip("謎の答え")] string seikai = "answer";
+    [Tooltip("謎の答え")] string seikai = "samon";
     [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
     [Tooltip("文字入力の後ろにあるパネル")] GameObject _inputTextBackground;
 
@@ -27,7 +27,7 @@ public class JudgeButton : ButtonBase
             //正解だったらボタンが現れる
             _inputTextBackground.SetActive(false);
             _button.SetActive(true);
-            _button.GetComponent<SpriteRenderer>().DOFade(255, 1.0f);
+            _button.GetComponent<SpriteRenderer>().DOFade(1, 1.0f).SetEase(Ease.Linear).SetAutoKill();
             GameManager.instance._isFocused = false;
         }
         else
