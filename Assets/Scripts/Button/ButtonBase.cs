@@ -28,7 +28,7 @@ public class ButtonBase : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void OnPointerClick(PointerEventData eventData) // ボタンが押され、その後ドラッグ操作が入ることなくボタンが離される
     {
-        _image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
+        //_image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
         Click();
     }
 

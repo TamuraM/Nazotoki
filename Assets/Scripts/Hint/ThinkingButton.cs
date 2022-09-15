@@ -192,20 +192,50 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
             //左側の謎
             if (_angle == 270)
             {
-                   // Debug.Log("ひだり");
-                    Thinking(HintCheckList.LeftHint1, HintCheckList.LeftHint2, GameManager.Clear.FirstStageClear, _hint[0], _hint[1], _hintButtons[0], _hintButtons[1]);                
+
+                if(GameManager.instance._clearState != GameManager.Clear.LastStageStart)
+                {
+                    // Debug.Log("ひだり");
+                    Thinking(HintCheckList.LeftHint1, HintCheckList.LeftHint2, GameManager.Clear.FirstStageClear, _hint[0], _hint[1], _hintButtons[0], _hintButtons[1]);
+                }
+                else
+                {
+                    _textBox.SetActive(true);
+                    _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+                }
+
             }
             //後ろ側の謎
             else if (_angle == 180)
             {
-                //Debug.Log("うしろ");
-                Thinking(HintCheckList.BackHint1, HintCheckList.BackHint2, GameManager.Clear.SecondStageClear, _hint[2], _hint[3], _hintButtons[2], _hintButtons[3]);
+
+                if (GameManager.instance._clearState != GameManager.Clear.LastStageStart)
+                {
+                    //Debug.Log("うしろ");
+                    Thinking(HintCheckList.BackHint1, HintCheckList.BackHint2, GameManager.Clear.SecondStageClear, _hint[2], _hint[3], _hintButtons[2], _hintButtons[3]);
+                }
+                else
+                {
+                    _textBox.SetActive(true);
+                    _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+                }
+
             }
             //右側の謎
             else if (_angle ==　90)
             {
-                //Debug.Log("みぎ");
-                Thinking(HintCheckList.RightHint1, HintCheckList.RightHint2, GameManager.Clear.ThirdStageClear, _hint[4], _hint[5], _hintButtons[4], _hintButtons[5]);
+
+                if (GameManager.instance._clearState != GameManager.Clear.LastStageStart)
+                {
+                    //Debug.Log("みぎ");
+                    Thinking(HintCheckList.RightHint1, HintCheckList.RightHint2, GameManager.Clear.ThirdStageClear, _hint[4], _hint[5], _hintButtons[4], _hintButtons[5]);
+                }
+                else
+                {
+                    _textBox.SetActive(true);
+                    _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+                }
+
             }
             //ドア側の謎
             else if (_angle == 0)
@@ -292,9 +322,9 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     /// <param name="second"></param>
     public void Thinking(HintCheckList first, HintCheckList second, GameManager.Clear clear, string hint1, string hint2, GameObject hint1buttn, GameObject hint2buttn)
     {
-
+        
         //まだクリアしてなかったらヒント表示
-        if((GameManager.instance._clearState & clear) != clear)
+        if ((GameManager.instance._clearState & clear) != clear)
         {
             GameManager.instance._gameMode = GameManager.GameMode.Thinking;
             _image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
@@ -318,8 +348,8 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
             }
 
         }
-        //もうクリアしているか、ラス謎が出てたらヒント出さない
-        else if(GameManager.instance._clearState == clear && GameManager.instance._clearState == GameManager.Clear.LastStageStart)
+        //もうクリアしていたらヒント出さない
+        else if((GameManager.instance._clearState & clear) == clear)
         {
             _textBox.SetActive(true);
             _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
