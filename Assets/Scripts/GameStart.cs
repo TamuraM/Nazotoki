@@ -20,8 +20,15 @@ public class GameStart : MonoBehaviour
         _startText = _start.GetComponent<Text>();
         _storyText.SetActive(false);
         _isPushed = false;
-        _startText.DOFade(0.1f, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetAutoKill();
-        _start.transform.DOMoveY(-6.0f, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetRelative().SetAutoKill();
+        //タイトルをフェード
+        _title.GetComponent<Image>().DOFade(1, 2.5f).SetEase(Ease.Linear).SetAutoKill();
+        //スタートテキストをフェード後にアニメーション
+        _startText.DOFade(1, 2.5f).SetEase(Ease.Linear)
+            .OnComplete(() => 
+            { _startText.DOFade(0.1f, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetAutoKill(); _start.transform.DOMoveY(-6.0f, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetRelative().SetAutoKill(); })
+                .SetAutoKill();
+        //_startText.DOFade(0.1f, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetAutoKill();
+        //_start.transform.DOMoveY(-6.0f, 1.0f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).SetRelative().SetAutoKill();
     }
 
     void Update()

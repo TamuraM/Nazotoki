@@ -293,7 +293,8 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public void Thinking(HintCheckList first, HintCheckList second, GameManager.Clear clear, string hint1, string hint2, GameObject hint1buttn, GameObject hint2buttn)
     {
 
-        if(GameManager.instance._clearState != clear)
+        //まだクリアしてなかったらヒント表示
+        if((GameManager.instance._clearState & clear) != clear)
         {
             GameManager.instance._gameMode = GameManager.GameMode.Thinking;
             _image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
@@ -316,6 +317,12 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
             }
 
+        }
+        //もうクリアしているか、ラス謎が出てたらヒント出さない
+        else if(GameManager.instance._clearState == clear && GameManager.instance._clearState == GameManager.Clear.LastStageStart)
+        {
+            _textBox.SetActive(true);
+            _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
         }
 
     }

@@ -28,11 +28,11 @@ public class GameManager : MonoBehaviour
     string[] _colorButton = { "YellowButton", "WhiteButton", "BlueButton", "RedButton", "GreenButton" };
     [SerializeField, Tooltip("ボタンを正しく押せた時に光るライトのリスト")] List<MeshRenderer> _lights = new(5);
     [Tooltip("ライトのやつカウントする数字")] int _lighting = 0;
+    [SerializeField, Header("クリア時のライトのマテリアル")] Material _clearLightMaterial;
 
     //右側の謎関係
     [SerializeField, Header("モニターの画像")] SpriteRenderer _monitor;
     [SerializeField, Header("謎の画像たちリスト")] Sprite[] _questions = new Sprite[3];
-
     [SerializeField, Header("ボタンを押す順番に入れる")] GameObject[] _spriteButton = new GameObject[3];
     [Tooltip("押すボタンのList")] List<GameObject> _spriteButtons = new();
     [SerializeField, Header("まるの画像")] Sprite _circle; //正解の時
@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour
             {
                 //Debug.Log(hit.collider.gameObject.name);
 
-                if ((_clearState & Clear.FirstStageClear) != Clear.FirstStageClear)
+                if ((_clearState & Clear.FirstStageClear) != Clear.FirstStageClear && _clearState != Clear.LastStageStart)
                 {
                     //----------左側にある謎解き----------
                     //机の上の紙クリックしたら謎が拡大される
@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
                     //----------ここまで----------
                 }
 
-                if ((_clearState & Clear.SecondStageClear) != Clear.SecondStageClear)
+                if ((_clearState & Clear.SecondStageClear) != Clear.SecondStageClear && _clearState != Clear.LastStageStart)
                 {
                     //----------背面にある謎解き----------　クリックした順番があってたらクリア
                     if (hit.collider.gameObject.name == _colorButtons[0])
@@ -183,13 +183,14 @@ public class GameManager : MonoBehaviour
                     if (_colorButtons.Count == 0)
                     {
                         _colorButtons.Add("a");
+                        _lights.ForEach(light => light.material = _clearLightMaterial);
                         _light2.material = _lightEmission;
                         _clearState |= Clear.SecondStageClear;
                     }
                     //----------ここまで----------
                 }
 
-                if ((_clearState & Clear.ThirdStageClear) != Clear.ThirdStageClear)
+                if ((_clearState & Clear.ThirdStageClear) != Clear.ThirdStageClear && _clearState != Clear.LastStageStart)
                 {
                     //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
                     if (hit.collider.gameObject == _spriteButtons[0])
@@ -199,7 +200,7 @@ public class GameManager : MonoBehaviour
                         _spriteButtons.RemoveAt(0);
                         StartCoroutine(SpriteQuestionSucces());
                     }
-                    else
+                    else if(hit.collider.gameObject != _spriteButtons[0] && hit.collider.gameObject.tag == "SpriteButton")
                     {
                         _clearSprite = 0;
                         _spriteButtons = _spriteButton.ToList();
@@ -208,6 +209,7 @@ public class GameManager : MonoBehaviour
 
                     if (_spriteButtons.Count == 0)
                     {
+                        _monitor.sprite = _circle;
                         _spriteButtons.Add(this.gameObject);
                         _light3.material = _lightEmission;
                         _clearState |= Clear.ThirdStageClear;

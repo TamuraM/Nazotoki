@@ -20,10 +20,13 @@ public class StoryTextManager : MonoBehaviour
     [SerializeField, Tooltip("ゲームオーバー時のストーリー")] TextAsset _gameoverStory;
     string[] _gameover;
     [SerializeField, Tooltip("クレジットのテキストデータ")] TextAsset _creditText;
-    [Tooltip("上上下下左右左右BA")] KeyCode[] _command = { KeyCode.UpArrow, KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.B, KeyCode.A };
-    [Tooltip("コマンドのリスト")] List<KeyCode> _creditCommand;
+    bool _goCredit;
+    //[Tooltip("上上下下左右左右BA")] KeyCode[] _command = { KeyCode.UpArrow, KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.B, KeyCode.A };
+    //[Tooltip("コマンドのリスト")] List<KeyCode> _creditCommand;
     [SerializeField, Header("リトライボタン")] GameObject _retryButton;
     bool _goRetry;
+    bool _discoverRetry;
+    public bool DiscoverRetry { get => _discoverRetry; }
 
     void Start()
     {
@@ -33,27 +36,24 @@ public class StoryTextManager : MonoBehaviour
         //_clear = _clearStory.text.Split(char.Parse("\n"));
         //_gameover = _gameoverStory.text.Split(char.Parse("\n"));
         _storyText.text = "";
-        _creditCommand = _command.ToList();
+        //_creditCommand = _command.ToList();
     }
 
     void Update()
     {
-        //-----クレジット関係-----
-        if (Input.GetKeyDown(_creditCommand[0]))
-        {
-            _creditCommand.Remove(0);
-            //なんか音鳴らしたい
-        }
-        else if(!Input.GetKeyDown(_creditCommand[0]))
-        {
-            _creditCommand = _command.ToList();
-        }
 
-        if(_creditCommand.Count == 0)
+        if(GameManager.instance._gameMode == GameManager.GameMode.Title)
         {
-            //クレジット流す
+            //-----クレジット関係-----
+
+            if(Input.GetKeyDown(KeyCode.Escape) && !_goCredit)
+            {
+                Debug.Log("クレジット");
+                _goCredit = true;
+                //クレジット流す
+            }
+            //-----ここまで-----
         }
-        //-----ここまで-----
 
         //ゲームが始まったらオープニングストーリーを表示
         if (GameManager.instance._gameMode == GameManager.GameMode.Opening)
@@ -109,7 +109,7 @@ public class StoryTextManager : MonoBehaviour
         {
             _goRetry = false;
             _retryButton.SetActive(true);
-            _retryButton.GetComponent<Image>().DOFade(1.0f,1.0f).SetEase(Ease.Linear);
+            _retryButton.GetComponent<Image>().DOFade(1.0f,1.0f).SetEase(Ease.Linear).OnComplete(() => _discoverRetry = true).SetAutoKill();
         }
 
     }
