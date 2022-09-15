@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using System.Linq;
+using UnityEngine.SceneManagement;
 
 /// <summary>ストーリーテキストの管理</summary>
 public class StoryTextManager : MonoBehaviour
@@ -11,18 +11,13 @@ public class StoryTextManager : MonoBehaviour
     [SerializeField, Tooltip("ストーリーの後ろ")] GameObject _storyPanel;
     [SerializeField, Tooltip("ストーリーのテキスト")] Text _storyText;
     [SerializeField, Tooltip("スタート時のストーリー")] TextAsset _startStory;
-    string[] _start;
     bool _goStart = false;
     bool _endStartStory = false;
     [SerializeField, Tooltip("クリア時のストーリー")] TextAsset _clearStory;
-    string[] _clear;
     bool _goEnd;
     [SerializeField, Tooltip("ゲームオーバー時のストーリー")] TextAsset _gameoverStory;
-    string[] _gameover;
     [SerializeField, Tooltip("クレジットのテキストデータ")] TextAsset _creditText;
     bool _goCredit;
-    //[Tooltip("上上下下左右左右BA")] KeyCode[] _command = { KeyCode.UpArrow, KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.B, KeyCode.A };
-    //[Tooltip("コマンドのリスト")] List<KeyCode> _creditCommand;
     [SerializeField, Header("リトライボタン")] GameObject _retryButton;
     bool _goRetry;
     bool _discoverRetry;
@@ -32,27 +27,18 @@ public class StoryTextManager : MonoBehaviour
     {
         _retryButton.SetActive(false);
         _storyText = _storyText.GetComponent<Text>();
-        //_start = _startStory.text.Split(char.Parse("\n"));
-        //_clear = _clearStory.text.Split(char.Parse("\n"));
-        //_gameover = _gameoverStory.text.Split(char.Parse("\n"));
         _storyText.text = "";
-        //_creditCommand = _command.ToList();
     }
 
     void Update()
     {
-
-        if(GameManager.instance._gameMode == GameManager.GameMode.Title)
+        //-----クレジット関係-----
+        if (GameManager.instance._gameMode == GameManager.GameMode.Credit && !_goCredit)
         {
-            //-----クレジット関係-----
-
-            if(Input.GetKeyDown(KeyCode.Escape) && !_goCredit)
-            {
-                Debug.Log("クレジット");
-                _goCredit = true;
-                //クレジット流す
-            }
-            //-----ここまで-----
+            Debug.Log("クレジット");
+            _goCredit = true;
+            //クレジット流す
+            StartCoroutine(ShowCredit());
         }
 
         //ゲームが始まったらオープニングストーリーを表示
@@ -109,28 +95,13 @@ public class StoryTextManager : MonoBehaviour
         {
             _goRetry = false;
             _retryButton.SetActive(true);
-            _retryButton.GetComponent<Image>().DOFade(1.0f,1.0f).SetEase(Ease.Linear).OnComplete(() => _discoverRetry = true).SetAutoKill();
+            _retryButton.GetComponent<Image>().DOFade(1.0f, 1.0f).SetEase(Ease.Linear).OnComplete(() => _discoverRetry = true).SetAutoKill();
         }
 
     }
 
     IEnumerator ShowStartStory()
     {
-
-        //foreach (var s in _start)
-        //{
-
-        //    if (s != "空白")
-        //    {
-        //        yield return _storyText.DOText($"{_storyText.text}{s}\n", 0.5f * (s.Length + _storyText.text.Length)).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        //    }
-        //    else
-        //    {
-        //        yield return _storyText.DOText($"", 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        //    }
-
-        //}
-
         yield return _storyText.DOText($"{_startStory.text}", 0.2f * _startStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(1.0f);
         _storyText.text = "";
@@ -143,20 +114,6 @@ public class StoryTextManager : MonoBehaviour
         _storyPanel.SetActive(true);
         yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
 
-        //foreach (var s in _clear)
-        //{
-
-        //    if (s != "空白")
-        //    {
-        //        yield return _storyText.DOText($"\n{_storyText.text}{s}", 3.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        //    }
-        //    else
-        //    {
-        //        yield return _storyText.DOText($"", 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        //    }
-
-        //}
-
         yield return _storyText.DOText($"{_clearStory.text}", 0.2f * _clearStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(1.0f);
         _goRetry = true;
@@ -168,23 +125,17 @@ public class StoryTextManager : MonoBehaviour
         _storyPanel.SetActive(true);
         yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
 
-        //foreach (var s in _gameover)
-        //{
-
-        //    if (s != "空白")
-        //    {
-        //        _storyText.text = $"{_storyText.text}\n";
-        //        yield return _storyText.DOText($"{_storyText.text}{s}\n", 0.5f * s.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        //    }
-        //    else
-        //    {
-        //        yield return _storyText.DOText($"", 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        //    }
-
-        //}
-
         yield return _storyText.DOText($"{_gameoverStory.text}", 0.2f * _gameoverStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(1.0f);
         _goRetry = true;
+    }
+
+    IEnumerator ShowCredit()
+    {
+        yield return _storyText.DOText($"{_creditText}", 0.2f * _creditText.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return new WaitForSeconds(4.0f);
+        yield return _storyText.DOFade(0, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return new WaitForSeconds(0.5f);
+        SceneManager.LoadScene("Game");
     }
 }

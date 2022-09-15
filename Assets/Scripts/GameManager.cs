@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
         Thinking, //ヒントを考えてる
         GameClear, //脱出成功のエンディング
         GameOver, //時間切れのエンディング
+        Credit, //クレジット表示
     }
 
     public GameMode _gameMode;
@@ -112,10 +113,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         //右クリックで現在のクリア状況を確認
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            Debug.Log(_clearState);
-        }
+        //if (Input.GetKeyDown(KeyCode.Mouse1))
+        //{
+        //    Debug.Log(_clearState);
+        //}
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
