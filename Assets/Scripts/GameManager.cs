@@ -45,6 +45,12 @@ public class GameManager : MonoBehaviour
     [SerializeField, Header("ドアの謎の背景")] GameObject _lastNazoBackground;
     [SerializeField, Header("番号入力画面")] GameObject _numberKeyBackground;
 
+    //クリアしたときの音
+    [SerializeField, Header("ナンバーキー")] AudioSource _lightAudio;
+    bool _clearLeftNazo;
+    bool _clearBackNazo;
+    bool _clearRightNazo;
+
     public bool _isFocused;
 
     /// <summary>ゲーム内の状態</summary>
@@ -147,8 +153,10 @@ public class GameManager : MonoBehaviour
                     }
 
                     //ボタンをクリックしたらクリア
-                    if (hit.collider.gameObject == _button)
+                    if (hit.collider.gameObject == _button && !_clearLeftNazo)
                     {
+                        _clearLeftNazo = true;
+                        _lightAudio.Play();
                         _light1.material = _lightEmission;
                         _clearState |= Clear.FirstStageClear;
                     }
@@ -181,8 +189,10 @@ public class GameManager : MonoBehaviour
                     }
 
                     //クリアしたら、2個目のライトを光らせる
-                    if (_colorButtons.Count == 0)
+                    if (_colorButtons.Count == 0 && !_clearBackNazo)
                     {
+                        _clearBackNazo = true;
+                        _lightAudio.Play();
                         _colorButtons.Add("a");
                         _lights.ForEach(light => light.material = _clearLightMaterial);
                         _light2.material = _lightEmission;
@@ -208,8 +218,10 @@ public class GameManager : MonoBehaviour
                         StartCoroutine(SpriteQuestionWrong());
                     }
 
-                    if (_spriteButtons.Count == 0)
+                    if (_spriteButtons.Count == 0 && !_clearRightNazo)
                     {
+                        _clearRightNazo = true;
+                        _lightAudio.Play();
                         _monitor.sprite = _circle;
                         _spriteButtons.Add(this.gameObject);
                         _light3.material = _lightEmission;

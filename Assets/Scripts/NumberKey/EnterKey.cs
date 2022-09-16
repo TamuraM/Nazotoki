@@ -7,6 +7,7 @@ public class EnterKey : NumberKeyBase
 {
     [SerializeField, Header("数字入力画面")] GameObject _inputNumber;
     [SerializeField] Animator _numberKey;
+    [SerializeField, Header("ドア")] AudioSource _audio;
     [SerializeField, Header("ドア")] Animator _door;
 
     public override void OnPointerClick(PointerEventData eventData)
@@ -34,6 +35,7 @@ public class EnterKey : NumberKeyBase
             GameManager.instance._isFocused = false;
             //ドアが開く
             _door.SetBool("EnterAnswer", true);
+            _audio.Play();
             GameManager.instance._clearState = GameManager.Clear.LastStageClear;
             GameManager.instance._gameMode = GameManager.GameMode.GameClear;
         }

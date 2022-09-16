@@ -20,6 +20,16 @@ public class JudgeButton : ButtonBase
         _button.SetActive(false);
     }
 
+    private void Update()
+    {
+
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            Click();
+        }
+
+    }
+
     public override void Click()
     {
         //入力されたテキストが正解かどうか判定する
