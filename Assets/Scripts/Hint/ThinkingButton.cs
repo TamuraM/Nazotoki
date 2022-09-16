@@ -18,6 +18,14 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     [SerializeField, Header("ヒントテキスト"), Tooltip("ヒントを表示するテキスト")] Text _hintText;
     [SerializeField, Header("ヒント.text"), Tooltip("ヒントが書かれてるテキスト")] TextAsset _hintTextFile;
     string[] _hint;
+    string _LeftHint1;
+    string _LeftHint2;
+    string _BackHint1;
+    string _BackHint2;
+    string _RightHint1;
+    string _RightHint2;
+    string _DoorHint1;
+    string _DoorHint2;
     bool _endReadHint;
     [SerializeField, Header("ヒントボタン")] List<GameObject> _hintButtons;
 
@@ -42,6 +50,14 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
         _imageColor = GetComponent<Image>().color;
         _textBox.SetActive(false);
         _hint = _hintTextFile.text.Split(char.Parse("\n"));
+        _LeftHint1 = $"{_hint[1]}\n{_hint[2]}\n{_hint[3]}";
+        _LeftHint2 = $"{_hint[5]}\n{_hint[6]}\n{_hint[7]}";
+        _BackHint1 = $"{_hint[9]}\n{_hint[10]}\n{_hint[11]}";
+        _BackHint2 = $"{_hint[13]}\n{_hint[14]}\n{_hint[15]}";
+        _RightHint1 = $"{_hint[17]}\n{_hint[18]}\n{_hint[19]}";
+        _RightHint2 = $"{_hint[21]}\n{_hint[22]}\n{_hint[23]}";
+        _DoorHint1 = $"{_hint[25]}\n{_hint[26]}\n{_hint[27]}";
+        _DoorHint2 = $"{_hint[29]}\n{_hint[30]}\n{_hint[31]}";
         _hintText.text = "";
     }
 
@@ -49,7 +65,8 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     {
         _angle = _mainCamera.transform.rotation.eulerAngles.y;
 
-        if(_change)
+        //カメラの角度によって透明度を変える
+        if (_change)
         {
 
             //ドア側を向いている時
@@ -178,6 +195,12 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
             _endReadHint = false;
         }
 
+        //ヒントを見てる時にクリックしたら、一気に最後まで行く
+        if (GameManager.instance._gameMode == GameManager.GameMode.Thinking && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            _hintText.DOComplete();
+        }
+
     }
 
     /// <summary>クリックされたら官らの角度に合わせてヒントを表示</summary>
@@ -196,12 +219,12 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 if(GameManager.instance._clearState != GameManager.Clear.LastStageStart)
                 {
                     // Debug.Log("ひだり");
-                    Thinking(HintCheckList.LeftHint1, HintCheckList.LeftHint2, GameManager.Clear.FirstStageClear, _hint[0], _hint[1], _hintButtons[0], _hintButtons[1]);
+                    Thinking(HintCheckList.LeftHint1, HintCheckList.LeftHint2, GameManager.Clear.FirstStageClear, _LeftHint1, _LeftHint2, _hintButtons[0], _hintButtons[1]);
                 }
                 else
                 {
                     _textBox.SetActive(true);
-                    _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+                    _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
                 }
 
             }
@@ -212,12 +235,12 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 if (GameManager.instance._clearState != GameManager.Clear.LastStageStart)
                 {
                     //Debug.Log("うしろ");
-                    Thinking(HintCheckList.BackHint1, HintCheckList.BackHint2, GameManager.Clear.SecondStageClear, _hint[2], _hint[3], _hintButtons[2], _hintButtons[3]);
+                    Thinking(HintCheckList.BackHint1, HintCheckList.BackHint2, GameManager.Clear.SecondStageClear, _BackHint1, _BackHint2, _hintButtons[2], _hintButtons[3]);
                 }
                 else
                 {
                     _textBox.SetActive(true);
-                    _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+                    _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
                 }
 
             }
@@ -228,12 +251,12 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 if (GameManager.instance._clearState != GameManager.Clear.LastStageStart)
                 {
                     //Debug.Log("みぎ");
-                    Thinking(HintCheckList.RightHint1, HintCheckList.RightHint2, GameManager.Clear.ThirdStageClear, _hint[4], _hint[5], _hintButtons[4], _hintButtons[5]);
+                    Thinking(HintCheckList.RightHint1, HintCheckList.RightHint2, GameManager.Clear.ThirdStageClear, _RightHint1, _RightHint2, _hintButtons[4], _hintButtons[5]);
                 }
                 else
                 {
                     _textBox.SetActive(true);
-                    _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+                    _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
                 }
 
             }
@@ -244,7 +267,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 //ラス謎が出てる時だけ
                 if (GameManager.instance._clearState == GameManager.Clear.LastStageStart)
                 {
-                    Thinking(HintCheckList.DoorHint1, HintCheckList.DoorHint2, GameManager.Clear.LastStageClear, _hint[6], _hint[7], _hintButtons[6], _hintButtons[7]);
+                    Thinking(HintCheckList.DoorHint1, HintCheckList.DoorHint2, GameManager.Clear.LastStageClear, _DoorHint1, _DoorHint2, _hintButtons[6], _hintButtons[7]);
                 }
 
             }
@@ -344,7 +367,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
             {
                 //テキスト変更
                 _textBox.SetActive(true);
-                _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+                _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
             }
 
         }
@@ -352,7 +375,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
         else if((GameManager.instance._clearState & clear) == clear)
         {
             _textBox.SetActive(true);
-            _hintText.DOText("もう考えることはないようだ", 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+            _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
         }
 
     }
@@ -362,6 +385,6 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public void ShowHint(string s, HintCheckList hintCheckList = default , GameObject hintbutton = default)
     {
         _textBox.SetActive(true);
-        _hintText.DOText(s, 1.5f).SetEase(Ease.Linear).OnComplete(() => { _endReadHint = true; _hintCheckList |= hintCheckList; hintbutton.SetActive(true); }).SetAutoKill();
+        _hintText.DOText(s, 0.1f * s.Length).SetEase(Ease.Linear).OnComplete(() => { _endReadHint = true; _hintCheckList |= hintCheckList; hintbutton.SetActive(true); }).SetAutoKill();
     }
 }

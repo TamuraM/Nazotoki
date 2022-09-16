@@ -8,7 +8,14 @@ public class DoorHint1Button : HintButtonBase
 
     public override void Click()
     {
-        _hintText.DOText(_hint[6], 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+        StartCoroutine(Delay());
+    }
+
+    public override IEnumerator Delay()
+    {
+        yield return _hintText.DOText(_DoorHint1, 0.1f * _DoorHint1.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return new WaitForSeconds(0.1f);
+        _endReadHint = true;
     }
 
 }

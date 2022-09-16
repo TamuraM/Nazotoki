@@ -8,7 +8,8 @@ using DG.Tweening;
 public class JudgeButton : ButtonBase
 {
     [Tooltip("入力されたテキスト")] Text _inputText;
-    [Tooltip("謎の答え")] string seikai = "samon";
+    [Tooltip("謎の答え")] string _seikai = "samon";
+    [Tooltip("謎の答え")] string _bekkai = "samonn";
     [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
     [Tooltip("文字入力の後ろにあるパネル")] GameObject _inputTextBackground;
 
@@ -22,7 +23,7 @@ public class JudgeButton : ButtonBase
     public override void Click()
     {
         //入力されたテキストが正解かどうか判定する
-        if(_inputText.text == seikai)
+        if(_inputText.text == _seikai || _inputText.text == _bekkai)
         {
             //正解だったらボタンが現れる
             _inputTextBackground.SetActive(false);

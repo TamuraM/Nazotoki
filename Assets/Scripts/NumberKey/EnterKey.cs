@@ -18,7 +18,7 @@ public class EnterKey : NumberKeyBase
         }
         else
         {
-            return;
+            StartCoroutine(Wrong());
         }
 
     }

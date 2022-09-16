@@ -32,6 +32,13 @@ public class StoryTextManager : MonoBehaviour
 
     void Update()
     {
+
+        //なにかストーリーを流してる時にクリックしたら、一気に最後まで行く
+        if(Input.GetKeyDown(KeyCode.Mouse0) && (GameManager.instance._gameMode == GameManager.GameMode.Opening || GameManager.instance._gameMode == GameManager.GameMode.GameClear || GameManager.instance._gameMode == GameManager.GameMode.GameOver || GameManager.instance._gameMode == GameManager.GameMode.Credit))
+        {
+            _storyText.DOComplete();
+        }
+
         //-----クレジット関係-----
         if (GameManager.instance._gameMode == GameManager.GameMode.Credit && !_goCredit)
         {
@@ -133,7 +140,7 @@ public class StoryTextManager : MonoBehaviour
     IEnumerator ShowCredit()
     {
         yield return _storyText.DOText($"{_creditText}", 0.2f * _creditText.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(3.0f);
         yield return _storyText.DOFade(0, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene("Game");

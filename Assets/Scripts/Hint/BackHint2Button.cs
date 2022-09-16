@@ -8,7 +8,14 @@ public class BackHint2Button : HintButtonBase
 
     public override void Click()
     {
-        _hintText.DOText(_hint[3], 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+        StartCoroutine(Delay());
+    }
+
+    public override IEnumerator Delay()
+    {
+        yield return _hintText.DOText(_BackHint2, 0.1f * _BackHint2.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return new WaitForSeconds(0.1f);
+        _endReadHint = true;
     }
 
 }

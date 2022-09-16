@@ -8,7 +8,14 @@ public class LeftHint1Button : HintButtonBase
 
     public override void Click()
     {
-        _hintText.DOText(_hint[0], 1.5f).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
+        StartCoroutine(Delay());
+    }
+
+    public override IEnumerator Delay()
+    {
+        yield return _hintText.DOText(_LeftHint1, 0.1f * _LeftHint1.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return new WaitForSeconds(0.1f);
+        _endReadHint = true;
     }
 
 }
