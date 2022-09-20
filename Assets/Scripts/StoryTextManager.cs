@@ -128,13 +128,15 @@ public class StoryTextManager : MonoBehaviour
 
     IEnumerator ShowGameoverStory()
     {
-        yield return new WaitForSeconds(2.0f);
+        //yield return new WaitForSeconds(2.0f);
         _storyPanel.SetActive(true);
         yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
 
         yield return _storyText.DOText($"{_gameoverStory.text}", 0.2f * _gameoverStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
-        yield return new WaitForSeconds(1.0f);
-        _goRetry = true;
+        yield return new WaitForSeconds(3.0f);
+        yield return _storyText.DOFade(0, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return new WaitForSeconds(0.5f);
+        SceneManager.LoadScene("Game");
     }
 
     IEnumerator ShowCredit()

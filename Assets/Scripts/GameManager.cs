@@ -10,6 +10,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    [SerializeField, Header("制限時間")] float _timeLimit = 600f;
+    float _minute = 1.0f;
+    float _second = 1.0f;
+    [Tooltip("制限時間(分)")] int _limitMinute = 10;
+    [Tooltip("制限時間(分)")] int _limitSecond = 0;
+    [SerializeField, Header("制限時間を表示するテキスト")] Text _time;
+
     //ドアの横にあるライト
     [SerializeField, Header("ライト1のMeshRenderer"), Tooltip("1つ目のライトのメッシュレンダラー")] MeshRenderer _light1;
     [SerializeField, Header("ライト2のMeshRenderer"), Tooltip("2つ目のライトのメッシュレンダラー")] MeshRenderer _light2;
@@ -99,6 +106,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        //_time.text = $"{_limitMinute.ToString("00")}:{_limitSecond.ToString("00")}";
+
         _clearState = Clear.ClearSitenaiMan;
         _gameMode = GameMode.Title;
 
@@ -123,6 +132,48 @@ public class GameManager : MonoBehaviour
         //{
         //    Debug.Log(_clearState);
         //}
+
+        
+        if(_gameMode == GameMode.PlayGame)
+        {
+            //制限時間減って、０になったらゲームオーバー
+            _timeLimit -= Time.deltaTime;
+
+            if(_timeLimit < 0)
+            {
+                _limitMinute = 0;
+                _limitSecond = 0;
+                _gameMode = GameMode.GameOver;
+            }
+
+            //制限時間表示
+            _minute -= Time.deltaTime;
+            _second -= Time.deltaTime;
+
+            if(_second < 0)
+            {
+
+                if(_limitSecond > 0)
+                {
+                    _limitSecond--;
+                }
+                else
+                {
+                    _limitSecond = 59;
+                }
+
+                _second = 1.0f;
+            }
+
+            if(_minute < 0)
+            {
+                _limitMinute--;
+                _minute = 60.0f;
+            }
+
+            _time.text = $"{_limitMinute:00}:{_limitSecond:00}";
+        }
+        
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
