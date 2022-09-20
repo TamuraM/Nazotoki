@@ -29,3 +29,9 @@
 ・[Incognitype](https://www.dafont.com/incognitype.font)
 
 ・[ロンド B （スクエア）](https://moji-waku.com/ronde/)
+
+### サウンド
+
+・[決定ボタンを押す音31/効果音ラボ](https://soundeffect-lab.info/sound/button/)
+
+・[鉄の扉を開ける/効果音ラボ](https://soundeffect-lab.info/sound/various/)
