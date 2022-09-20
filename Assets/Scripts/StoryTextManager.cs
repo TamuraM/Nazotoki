@@ -79,7 +79,7 @@ public class StoryTextManager : MonoBehaviour
             if (!_goEnd)
             {
                 _goEnd = true;
-                StartCoroutine(ShowEndStory());
+                StartCoroutine(ShowClearStory());
             }
 
         }
@@ -115,7 +115,7 @@ public class StoryTextManager : MonoBehaviour
         _endStartStory = true;
     }
 
-    IEnumerator ShowEndStory()
+    IEnumerator ShowClearStory()
     {
         yield return new WaitForSeconds(2.0f);
         _storyPanel.SetActive(true);
