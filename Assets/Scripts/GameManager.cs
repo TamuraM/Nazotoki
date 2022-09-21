@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [SerializeField, Header("§ŒÀŠÔ")] float _timeLimit = 600f;
-    float _minute = 1.0f;
     float _second = 1.0f;
     [Tooltip("§ŒÀŠÔ(•ª)")] int _limitMinute = 10;
     [Tooltip("§ŒÀŠÔ(•ª)")] int _limitSecond = 0;
@@ -147,7 +146,6 @@ public class GameManager : MonoBehaviour
             }
 
             //§ŒÀŠÔ•\¦
-            _minute -= Time.deltaTime;
             _second -= Time.deltaTime;
 
             if(_second < 0)
@@ -160,15 +158,10 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     _limitSecond = 59;
+                    _limitMinute--;
                 }
 
                 _second = 1.0f;
-            }
-
-            if(_minute < 0)
-            {
-                _limitMinute--;
-                _minute = 60.0f;
             }
 
             _time.text = $"{_limitMinute:00}:{_limitSecond:00}";
