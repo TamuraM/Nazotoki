@@ -126,14 +126,8 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        //右クリックで現在のクリア状況を確認
-        //if (Input.GetKeyDown(KeyCode.Mouse1))
-        //{
-        //    Debug.Log(_clearState);
-        //}
-
         
-        if(_gameMode == GameMode.PlayGame)
+        if(_gameMode == GameMode.PlayGame || _gameMode == GameMode.Thinking)
         {
             //制限時間減って、０になったらゲームオーバー
             _timeLimit -= Time.deltaTime;

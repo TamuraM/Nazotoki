@@ -109,7 +109,7 @@ public class StoryTextManager : MonoBehaviour
 
     IEnumerator ShowStartStory()
     {
-        yield return _storyText.DOText($"{_startStory.text}", 0.2f * _startStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return _storyText.DOText($"{_startStory.text}", 0.15f * _startStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(1.0f);
         _storyText.text = "";
         _endStartStory = true;
@@ -121,7 +121,7 @@ public class StoryTextManager : MonoBehaviour
         _storyPanel.SetActive(true);
         yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
 
-        yield return _storyText.DOText($"{_clearStory.text}", 0.2f * _clearStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return _storyText.DOText($"{_clearStory.text}", 0.15f * _clearStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(1.0f);
         _goRetry = true;
     }
@@ -132,7 +132,7 @@ public class StoryTextManager : MonoBehaviour
         _storyPanel.SetActive(true);
         yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
 
-        yield return _storyText.DOText($"{_gameoverStory.text}", 0.2f * _gameoverStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return _storyText.DOText($"{_gameoverStory.text}", 0.15f * _gameoverStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(3.0f);
         yield return _storyText.DOFade(0, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(0.5f);
@@ -141,7 +141,7 @@ public class StoryTextManager : MonoBehaviour
 
     IEnumerator ShowCredit()
     {
-        yield return _storyText.DOText($"{_creditText}", 0.2f * _creditText.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
+        yield return _storyText.DOText($"{_creditText}", 0.15f * _creditText.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(3.0f);
         yield return _storyText.DOFade(0, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(0.5f);
