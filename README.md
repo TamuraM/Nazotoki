@@ -32,6 +32,16 @@
 
 ### サウンド
 
+・[決定ボタンを押す音23/効果音ラボ](https://soundeffect-lab.info/sound/button/)
+
 ・[決定ボタンを押す音31/効果音ラボ](https://soundeffect-lab.info/sound/button/)
 
+・[決定ボタンを押す音33/効果音ラボ](https://soundeffect-lab.info/sound/button/)
+
 ・[鉄の扉を開ける/効果音ラボ](https://soundeffect-lab.info/sound/various/)
+
+・[寂寞/甘茶の音楽工房](https://amachamusic.chagasi.com/music_sekibaku.html)
+
+・[カノン/甘茶の音楽工房](https://amachamusic.chagasi.com/music_canon.html)
+
+・[思考実験/H/MIX GALLERY](http://www.hmix.net/music/n/n87.mp3)
