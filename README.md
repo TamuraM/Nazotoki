@@ -1,5 +1,7 @@
 # とある部屋からの脱出
 ![タイトル](https://github.com/TamuraM/nazotoki/blob/master/%E3%81%A8%E3%81%82%E3%82%8B%E9%83%A8%E5%B1%8B%20%E3%81%8B%E3%82%89%E3%81%AE%E8%84%B1%E5%87%BA.png)
+
+ロゴ制作サイト　[Canva](https://www.canva.com/)
 ## 概要
 審査会用のゲームその2です。
 
