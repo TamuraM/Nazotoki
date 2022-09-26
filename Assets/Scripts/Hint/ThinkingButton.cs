@@ -224,6 +224,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 else
                 {
                     _textBox.SetActive(true);
+                    GameManager.instance._gameMode = GameManager.GameMode.Thinking;
                     _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
                 }
 
@@ -240,6 +241,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 else
                 {
                     _textBox.SetActive(true);
+                    GameManager.instance._gameMode = GameManager.GameMode.Thinking;
                     _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
                 }
 
@@ -256,6 +258,7 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
                 else
                 {
                     _textBox.SetActive(true);
+                    GameManager.instance._gameMode = GameManager.GameMode.Thinking;
                     _hintText.DOText("もう考えることはないようだ", 0.1f * 13).SetEase(Ease.Linear).OnComplete(() => _endReadHint = true).SetAutoKill();
                 }
 
@@ -345,11 +348,11 @@ public class ThinkingButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
     /// <param name="second"></param>
     public void Thinking(HintCheckList first, HintCheckList second, GameManager.Clear clear, string hint1, string hint2, GameObject hint1buttn, GameObject hint2buttn)
     {
-        
+        GameManager.instance._gameMode = GameManager.GameMode.Thinking;
+
         //まだクリアしてなかったらヒント表示
         if ((GameManager.instance._clearState & clear) != clear)
         {
-            GameManager.instance._gameMode = GameManager.GameMode.Thinking;
             _image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
 
             //ヒントを見たことがなければ第1ヒント表示
