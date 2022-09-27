@@ -6718,14 +6718,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timeLimit: 600
   _time: {fileID: 286271825}
-  _light1: {fileID: 1889488682}
-  _light2: {fileID: 1924285051}
-  _light3: {fileID: 580682296}
+  _doorLights:
+  - {fileID: 1889488682}
+  - {fileID: 1924285051}
+  - {fileID: 580682296}
   _lightMaterial: {fileID: 2100000, guid: dde341ba31300c848b9970499ac93dc7, type: 2}
   _lightEmission: {fileID: 2100000, guid: 39657a36893b76747a12825db0d6a4f8, type: 2}
   _nazo: {fileID: 182052534}
   _inputText: {fileID: 2115178734}
   _button: {fileID: 713705912}
+  _colorButtonAnswerArray:
+  - {fileID: 1141957385}
+  - {fileID: 374412379}
+  - {fileID: 1283082587}
+  - {fileID: 1377271619}
+  - {fileID: 1827788745}
   _lights:
   - {fileID: 103919139}
   - {fileID: 1810130301}
