@@ -17,4 +17,5 @@ public class BackHint1Button : HintButtonBase
         yield return new WaitForSeconds(0.1f);
         _endReadHint = true;
     }
+
 }

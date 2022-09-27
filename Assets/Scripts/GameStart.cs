@@ -6,8 +6,8 @@ using DG.Tweening;
 
 public class GameStart : MonoBehaviour
 {
-    [SerializeField, Header("タイトル")] GameObject _title;
-    [SerializeField, Header("スタート")] GameObject _start;
+    [SerializeField, Header("タイトル画像")] GameObject _title;
+    [SerializeField, Header("スタートテキスト")] GameObject _start;
     Image _titleImage;
     Text _startText;
     [SerializeField, Header("ストーリーのText")] GameObject _storyText;

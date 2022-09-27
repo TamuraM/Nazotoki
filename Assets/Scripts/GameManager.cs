@@ -19,25 +19,25 @@ public class GameManager : MonoBehaviour
     //ドアの横にあるライト
     [SerializeField, Header("ドアのライトのゲームオブジェクト")] MeshRenderer[] _doorLights;
     [SerializeField, Header("光ってないマテリアル"), Tooltip("ライトがひかってないときのマテリアル")] Material _lightMaterial;
-    [SerializeField, Header("光るMaterial"), Tooltip("ライトが光ってるマテリアル")] Material _lightEmission;
+    [SerializeField, Header("光るMaterial"), Tooltip("ライトが光ってるマテリアル")] Material _lightEmissionMaterial;
 
     //左側の謎関係
-    [SerializeField, Header("謎の背景"), Tooltip("謎解きがかいてある画像")] GameObject _nazo;
+    [SerializeField, Header("左側の謎の背景"), Tooltip("左側の謎解きがかいてある画像")] GameObject _leftNazoBackground;
     [SerializeField, Header("入力するテキストGameObject"), Tooltip("タイプライターをクリックしたときに出てくる入力画面パネル")] GameObject _inputText;
-    [SerializeField, Header("ボタン"), Tooltip("ボタンのゲームオブジェクト")] GameObject _button;
+    [SerializeField, Header("PushMeボタン"), Tooltip("PushMeボタンのゲームオブジェクト")] GameObject _pushMeButton;
 
     //後ろ側の謎関係
-    [Tooltip("背面にある色付きボタンのリスト")] List<GameObject> _colorButtonAnswer = new();
-    [SerializeField, Tooltip("ボタンの配列 押す順番に名前が入ってる")] GameObject[] _colorButtonAnswerArray; //黄、白、青、赤、緑
+    [Tooltip("背面にある色付きボタンのリスト ↓の配列を入れる")] List<GameObject> _colorButtonAnswer = new();
+    [SerializeField, Tooltip("ボタンの配列 押す順番に入ってる")] GameObject[] _colorButtonAnswerArray; //黄、白、青、赤、緑
     [SerializeField, Tooltip("ボタンを正しく押せた時に光るライトのリスト")] List<MeshRenderer> _colorButtonLights = new(5);
     [Tooltip("ライトのやつカウントする数字")] int _lighting = 0;
     [SerializeField, Header("クリア時のライトのマテリアル")] Material _clearLightMaterial;
 
     //右側の謎関係
     [SerializeField, Header("モニターの画像")] SpriteRenderer _monitor;
-    [SerializeField, Header("謎の画像たちリスト")] Sprite[] _questions = new Sprite[3];
-    [SerializeField, Header("ボタンを押す順番に入れる")] GameObject[] _spriteButton = new GameObject[3];
-    [Tooltip("押すボタンのList")] List<GameObject> _spriteButtons = new();
+    [SerializeField, Header("謎の画像たちリスト")] Sprite[] _questions = new Sprite[2];
+    [SerializeField, Header("ボタンを押す順番に入れる")] GameObject[] _monitorButtonAnswerArray = new GameObject[2];
+    [Tooltip("押すボタンのList ↑の配列を入れる")] List<GameObject> _monitorButtonAnswer = new();
     [SerializeField, Header("まるの画像")] Sprite _circle; //正解の時
     [SerializeField, Header("ばつの画像")] Sprite _cross; //不正解の時
     [Tooltip("今何問目か")] int _clearSprite = 0;
@@ -102,13 +102,11 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        //_time.text = $"{_limitMinute.ToString("00")}:{_limitSecond.ToString("00")}";
-
         _clearState = Clear.ClearSitenaiMan;
         _gameMode = GameMode.Title;
 
-        _button.SetActive(false);
-        _nazo.SetActive(false);
+        _pushMeButton.SetActive(false);
+        _leftNazoBackground.SetActive(false);
         _inputText.SetActive(false);
         _lastNazo.SetActive(false);
         _numberKey.SetActive(false);
@@ -116,7 +114,7 @@ public class GameManager : MonoBehaviour
         _numberKeyBackground.SetActive(false);
 
         _colorButtonAnswer = _colorButtonAnswerArray.ToList();
-        _spriteButtons = _spriteButton.ToList();
+        _monitorButtonAnswer = _monitorButtonAnswerArray.ToList();
         _monitor.sprite = _questions[_clearSprite];
     }
 
@@ -175,7 +173,7 @@ public class GameManager : MonoBehaviour
                     if (hit.collider.gameObject.name == "Nazo" && !_isFocused)
                     {
                         Debug.Log("なぞだ");
-                        _nazo.SetActive(true);
+                        _leftNazoBackground.SetActive(true);
                         _isFocused = true; ;
                     }
 
@@ -188,11 +186,11 @@ public class GameManager : MonoBehaviour
                     }
 
                     //ボタンをクリックしたらクリア
-                    if (hit.collider.gameObject == _button && !_clearLeftNazo)
+                    if (hit.collider.gameObject == _pushMeButton && !_clearLeftNazo)
                     {
                         _clearLeftNazo = true;
                         _lightAudio.Play();
-                        _doorLights[0].material = _lightEmission;
+                        _doorLights[0].material = _lightEmissionMaterial;
                         _clearState |= Clear.FirstStageClear;
                     }
                     //----------ここまで----------
@@ -205,8 +203,7 @@ public class GameManager : MonoBehaviour
                     {
                         //正解のボタンを押したら、上にあるライトが順番に点く
                         _colorButtonAnswer.RemoveAt(0);
-                        //Debug.Log(_colorButtons.Count);
-                        _colorButtonLights[_lighting].material = _lightEmission;
+                        _colorButtonLights[_lighting].material = _lightEmissionMaterial;
 
                         if (_lighting < 5)
                         {
@@ -216,7 +213,7 @@ public class GameManager : MonoBehaviour
                     }
                     else if (hit.collider.gameObject != _colorButtonAnswer[0] && hit.collider.gameObject.tag == "ColorButton")
                     {
-                        //間違ったボタンを押したら、上にあるライトが全部消える
+                        //間違ったボタンを押したら、上にあるライトが全部消えて、最初からになる
                         _colorButtonAnswer = _colorButtonAnswerArray.ToList();
                         Debug.Log(_colorButtonAnswer.Count);
                         _lighting = 0;
@@ -229,7 +226,7 @@ public class GameManager : MonoBehaviour
                         _clearBackNazo = true;
                         _lightAudio.Play();
                         _colorButtonLights.ForEach(light => light.material = _clearLightMaterial);
-                        _doorLights[1].material = _lightEmission;
+                        _doorLights[1].material = _lightEmissionMaterial;
                         _clearState |= Clear.SecondStageClear;
                     }
                     //----------ここまで----------
@@ -238,27 +235,27 @@ public class GameManager : MonoBehaviour
                 if ((_clearState & Clear.ThirdStageClear) != Clear.ThirdStageClear && _clearState != Clear.LastStageStart)
                 {
                     //----------右側にある謎解き----------　画像に対応したボタンを順番に押せたらクリア
-                    if (hit.collider.gameObject == _spriteButtons[0])
+                    if (hit.collider.gameObject == _monitorButtonAnswer[0])
                     {
                         //正解したらまるの画像がでてきて、次の問題が表示される
                         _clearSprite++;
-                        _spriteButtons.RemoveAt(0);
+                        _monitorButtonAnswer.RemoveAt(0);
                         StartCoroutine(SpriteQuestionSucces());
                     }
-                    else if(hit.collider.gameObject != _spriteButtons[0] && hit.collider.gameObject.tag == "SpriteButton")
+                    else if(hit.collider.gameObject != _monitorButtonAnswer[0] && hit.collider.gameObject.tag == "SpriteButton")
                     {
                         _clearSprite = 0;
-                        _spriteButtons = _spriteButton.ToList();
+                        _monitorButtonAnswer = _monitorButtonAnswerArray.ToList();
                         StartCoroutine(SpriteQuestionWrong());
                     }
 
-                    if (_spriteButtons.Count == 0 && !_clearRightNazo)
+                    if (_monitorButtonAnswer.Count == 0 && !_clearRightNazo)
                     {
                         _clearRightNazo = true;
                         _lightAudio.Play();
                         _monitor.sprite = _circle;
-                        _spriteButtons.Add(this.gameObject);
-                        _doorLights[2].material = _lightEmission;
+                        _monitorButtonAnswer.Add(this.gameObject);
+                        _doorLights[2].material = _lightEmissionMaterial;
                         _clearState |= Clear.ThirdStageClear;
                     }
                     //----------ここまで----------
@@ -278,7 +275,7 @@ public class GameManager : MonoBehaviour
                     //----------ドアにある謎解き----------　全問正解したら出てくる　答えの番号を打ち込めばクリア
                     if (_clearState == Clear.LastStageStart)
                     {
-                        _doorLights.ToList().ForEach(m => m.material = _lightEmission);
+                        _doorLights.ToList().ForEach(m => m.material = _lightEmissionMaterial);
                         _lastNazo.SetActive(true);
                         _numberKey.SetActive(true);
                     }

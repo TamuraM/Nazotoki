@@ -10,22 +10,31 @@ public class StoryTextManager : MonoBehaviour
 {
     [SerializeField, Tooltip("ストーリーの後ろ")] GameObject _storyPanel;
     [SerializeField, Tooltip("ストーリーのテキスト")] Text _storyText;
+
+    //スタート関係
     [SerializeField, Tooltip("スタート時のストーリー")] TextAsset _startStory;
-    bool _goStart = false;
-    bool _endStartStory = false;
+    [Tooltip("スタート時のストーリーを流したかどうか" )] bool _goStart = false;
+    [Tooltip("スタート時のストーリーを流し終えたかどうか")] bool _endStartStory = false;
+
+    //エンド関係
     [SerializeField, Tooltip("クリア時のストーリー")] TextAsset _clearStory;
-    bool _goEnd;
     [SerializeField, Tooltip("ゲームオーバー時のストーリー")] TextAsset _gameoverStory;
+    [Tooltip("エンディング時のストーリーを流したかどうか")] bool _goEnd;
+
+    //タイトルボタン関係
+    [SerializeField, Header("タイトルボタン")] GameObject _titleButton;
+    [Tooltip("タイトルボタンを表示したかどうか")] bool _goTitle;
+    [Tooltip("タイトルボタンを表示し終えたかどうか")] bool _discoverTitleButton;
+
+    //クレジット関係
     [SerializeField, Tooltip("クレジットのテキストデータ")] TextAsset _creditText;
-    bool _goCredit;
-    [SerializeField, Header("リトライボタン")] GameObject _retryButton;
-    bool _goRetry;
-    bool _discoverRetry;
-    public bool DiscoverRetry { get => _discoverRetry; }
+    [Tooltip("クレジットを流したかどうか")] bool _goCredit;
+    
+    public bool DiscoverTitleButton { get => _discoverTitleButton; }
 
     void Start()
     {
-        _retryButton.SetActive(false);
+        _titleButton.SetActive(false);
         _storyText = _storyText.GetComponent<Text>();
         _storyText.text = "";
     }
@@ -51,6 +60,7 @@ public class StoryTextManager : MonoBehaviour
         //ゲームが始まったらオープニングストーリーを表示
         if (GameManager.instance._gameMode == GameManager.GameMode.Opening)
         {
+
             if (!_endStartStory)
             {
 
@@ -71,7 +81,7 @@ public class StoryTextManager : MonoBehaviour
 
         }
 
-        //ゲームクリアしたらエンディングストーリーを表示
+        //ゲームクリアしたらクリアストーリーを表示
         if (GameManager.instance._gameMode == GameManager.GameMode.GameClear)
         {
 
@@ -98,11 +108,11 @@ public class StoryTextManager : MonoBehaviour
         }
 
         //リトライボタンをフェードインしたい
-        if (_goRetry)
+        if (_goTitle)
         {
-            _goRetry = false;
-            _retryButton.SetActive(true);
-            _retryButton.GetComponent<Image>().DOFade(1.0f, 1.0f).SetEase(Ease.Linear).OnComplete(() => _discoverRetry = true).SetAutoKill();
+            _goTitle = false;
+            _titleButton.SetActive(true);
+            _titleButton.GetComponent<Image>().DOFade(1.0f, 1.0f).SetEase(Ease.Linear).OnComplete(() => _discoverTitleButton = true).SetAutoKill();
         }
 
     }
@@ -123,12 +133,11 @@ public class StoryTextManager : MonoBehaviour
 
         yield return _storyText.DOText($"{_clearStory.text}", 0.15f * _clearStory.text.Length).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
         yield return new WaitForSeconds(1.0f);
-        _goRetry = true;
+        _goTitle = true;
     }
 
     IEnumerator ShowGameoverStory()
     {
-        //yield return new WaitForSeconds(2.0f);
         _storyPanel.SetActive(true);
         yield return _storyPanel.GetComponent<Image>().DOFade(1, 2.0f).SetEase(Ease.Linear).SetAutoKill().WaitForCompletion();
 

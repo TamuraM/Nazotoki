@@ -22,7 +22,8 @@ public class RetryButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public void OnPointerClick(PointerEventData eventData)
     {
 
-        if(_storyTextManager.DiscoverRetry)
+        //タイトルボタンを表示し終えてて、まだ押していなかったら実行できる
+        if(_storyTextManager.DiscoverTitleButton && !_isPushed)
         {
             _image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
             _isPushed = true;
@@ -35,7 +36,7 @@ public class RetryButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public void OnPointerEnter(PointerEventData eventData)
     {
 
-        if(_storyTextManager.DiscoverRetry && !_isPushed)
+        if(_storyTextManager.DiscoverTitleButton && !_isPushed)
         {
             _image.color = _imageColor - new Color(55 / 255f, 55 / 255f, 55 / 255f, 0);
         }
@@ -45,7 +46,7 @@ public class RetryButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public void OnPointerExit(PointerEventData eventData)
     {
 
-        if(_storyTextManager.DiscoverRetry && !_isPushed)
+        if(_storyTextManager.DiscoverTitleButton && !_isPushed)
         {
             _image.color = _imageColor;
         }

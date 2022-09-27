@@ -13,7 +13,6 @@ public class HintButtonBase : MonoBehaviour, IPointerClickHandler, IPointerEnter
     [SerializeField, Header("ヒントテキストボックス")] GameObject _textBox;
     [SerializeField, Header("ヒントテキスト")] protected Text _hintText;
     [SerializeField, Header("ヒントのテキストデータ")] TextAsset _hintTextFile;
-    protected Tween _tween = default;
     protected string[] _hint;
     protected string _LeftHint1;
     protected string _LeftHint2;
