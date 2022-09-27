@@ -282,6 +282,8 @@ public class GameManager : MonoBehaviour
                     //----------ドアにある謎解き----------　全問正解したら出てくる　答えの番号を打ち込めばクリア
                     if (_clearState == Clear.LastStageStart)
                     {
+                        MeshRenderer[] lights = { _light1, _light2, _light3 };
+                        lights.ToList().ForEach(m => m.material = _lightEmission);
                         _lastNazo.SetActive(true);
                         _numberKey.SetActive(true);
                     }
