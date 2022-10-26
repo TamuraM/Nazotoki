@@ -26,20 +26,22 @@ public class ButtonBase : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         Debug.LogError("継承先の派生クラスで関数を定義してください。");
     }
 
-    public void OnPointerClick(PointerEventData eventData) // ボタンが押され、その後ドラッグ操作が入ることなくボタンが離される
+    /// <summary>ボタンをクリックしたら画像をもっと暗くする
+    /// <param name="eventData"></param>
+    public virtual void OnPointerClick(PointerEventData eventData) // ボタンが押され、その後ドラッグ操作が入ることなくボタンが離される
     {
-        //_image.color = _imageColor - new Color(100 / 255f, 100 / 255f, 100 / 255f, 0);
+        _image.color = new Color(155 / 255f, 155 / 255f, 155 / 255f, 1);
         Click();
     }
 
-    /// <summary>ボタンの上にカーソルが乗ったら透明度を下げる</summary>
+    /// <summary>ボタンの上にカーソルが乗ったら画像を暗くする</summary>
     /// <param name="eventData"></param>
-    public void OnPointerEnter(PointerEventData eventData) //ボタンの範囲にマウスカーソルが入る
+    public virtual void OnPointerEnter(PointerEventData eventData) //ボタンの範囲にマウスカーソルが入る
     {
-        _image.color = _imageColor +  new Color(0, 0, 0, 105/255f);
+        _image.color = new Color(200 / 255f, 200 / 255f, 200 / 255f, 1);
     }
 
-    /// <summary>ボタンの上からカーソルがなくなったら透明度を上げる</summary>
+    /// <summary>ボタンの上からカーソルがなくなったら画像を元に戻す</summary>
     /// <param name="eventData"></param>
     public void OnPointerExit(PointerEventData eventData) //ボタンの範囲からマウスカーソルが出る
     {

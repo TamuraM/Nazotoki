@@ -38,7 +38,7 @@ public class JudgeButton : ButtonBase
             _inputTextBackground.SetActive(false);
             _button.SetActive(true);
             _button.GetComponent<SpriteRenderer>().DOFade(1, 1.0f).SetEase(Ease.Linear).SetAutoKill();
-            GameManager.instance._isFocused = false;
+            GameManager.Instance._isFocused = false;
         }
         else
         {

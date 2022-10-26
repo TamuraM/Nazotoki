@@ -3,41 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class EnterKey : NumberKeyBase
+public class EnterKey : ButtonBase
 {
     [SerializeField, Header("数字入力画面")] GameObject _inputNumber;
     [SerializeField] Animator _numberKey;
     [SerializeField, Header("ドア")] AudioSource _audio;
     [SerializeField, Header("ドア")] Animator _door;
-
-    public override void OnPointerClick(PointerEventData eventData)
-    {
-
-        if (_numberKeyController.Num.Length == 4)
-        {
-            Click();
-        }
-        else
-        {
-            StartCoroutine(Wrong());
-        }
-
-    }
+    [SerializeField] NumberKeyController _numberKeyController;
 
     public override void Click()
     {
 
-        if (_numberKeyController.Num == _numberKeyController.Answer)
+        if (_numberKeyController.InputNumber.Length == 4)
         {
-            //画像の透明度を戻して、背景を消す
-            Image.color = ImageColor;
-            _inputNumber.SetActive(false);
-            GameManager.instance._isFocused = false;
-            //ドアが開く
-            _door.SetBool("EnterAnswer", true);
-            _audio.Play();
-            GameManager.instance._clearState = GameManager.Clear.LastStageClear;
-            GameManager.instance._gameMode = GameManager.GameMode.GameClear;
+
+            if (_numberKeyController.InputNumber == _numberKeyController.Answer)
+            {
+                //画像の透明度を戻して、背景を消す
+                Image.color = ImageColor;
+                _inputNumber.SetActive(false);
+                GameManager.Instance._isFocused = false;
+                //ドアが開く
+                _door.SetBool("EnterAnswer", true);
+                _audio.Play();
+                GameManager.Instance._clearState = GameManager.Clear.LastStageClear;
+                GameManager.Instance._gameMode = GameManager.GameMode.GameClear;
+            }
+            else
+            {
+                StartCoroutine(Wrong());
+            }
+
         }
         else
         {
@@ -50,7 +46,7 @@ public class EnterKey : NumberKeyBase
     {
         _numberKey.SetBool("Wrong", true);
         yield return new WaitForSeconds(0.3f);
-        _numberKeyController.Num = "";
+        _numberKeyController.InputNumber = "";
         _numberKey.SetBool("Wrong", false);
     }
 

@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ReturnKey : NumberKeyBase
+public class ReturnKey : ButtonBase
 {
+    [SerializeField] NumberKeyController _numberKeyController;
     [SerializeField, Header("”š“ü—Í‰æ–Ê")] GameObject _inputNumber;
-
-    public override void OnPointerClick(PointerEventData eventData)
-    {
-        Click();
-    }
 
     public override void Click()
     {
         //‰æ‘œ‚Ì“§–¾“x‚ğ–ß‚µ‚ÄA”wŒi‚ğÁ‚·
-        _numberKeyController.Num = "";
+        _numberKeyController.InputNumber = "";
         Image.color = ImageColor;
         _inputNumber.SetActive(false);
-        GameManager.instance._isFocused = false;
+        GameManager.Instance._isFocused = false;
     }
 }

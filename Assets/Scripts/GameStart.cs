@@ -43,7 +43,7 @@ public class GameStart : MonoBehaviour
         }
 
         //エスケープキーが押されたらクレジットを流す
-        if (GameManager.instance._gameMode == GameManager.GameMode.Title && !_isPushed && Input.GetKeyDown(KeyCode.Escape))
+        if (GameManager.Instance._gameMode == GameManager.GameMode.Title && !_isPushed && Input.GetKeyDown(KeyCode.Escape))
         {
             _isPushed = !_isPushed;
             _startText.DORewind();
@@ -61,7 +61,7 @@ public class GameStart : MonoBehaviour
         yield return new WaitForSeconds(_fade);
 
         _storyText.SetActive(true);
-        GameManager.instance._gameMode = gameMode;
+        GameManager.Instance._gameMode = gameMode;
     }
 
 }

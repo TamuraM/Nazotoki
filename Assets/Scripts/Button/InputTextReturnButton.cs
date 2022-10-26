@@ -14,6 +14,6 @@ public class InputTextReturnButton : ButtonBase
         _inputText.text = "";
         Image.color = ImageColor;
         _inputTextBackground.SetActive(false);
-        GameManager.instance._isFocused = false;
+        GameManager.Instance._isFocused = false;
     }
 }

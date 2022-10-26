@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour
     {
         
         //タイトル画面でエンターキーを押したらSE再生してBGMを止める
-        if(GameManager.instance._gameMode == GameManager.GameMode.Title && Input.GetKeyDown(KeyCode.Return) && !_goStart)
+        if(GameManager.Instance._gameMode == GameManager.GameMode.Title && Input.GetKeyDown(KeyCode.Return) && !_goStart)
         {
             _goStart = true;
             _sounds[3].PlayOneShot(_start);
@@ -29,14 +29,14 @@ public class AudioManager : MonoBehaviour
         }
 
         //タイトル画面でエスケープキーを押したらSE再生してBGMを止める
-        if (GameManager.instance._gameMode == GameManager.GameMode.Title && Input.GetKeyDown(KeyCode.Escape))
+        if (GameManager.Instance._gameMode == GameManager.GameMode.Title && Input.GetKeyDown(KeyCode.Escape))
         {
             _sounds[3].PlayOneShot(_credit);
             _sounds[0].Stop();
         }
 
         //ゲームプレイ画面になったらゲーム時のBGMを流す
-        if (GameManager.instance._gameMode == GameManager.GameMode.PlayGame && !_goGame)
+        if (GameManager.Instance._gameMode == GameManager.GameMode.PlayGame && !_goGame)
         {
             _goGame = true;
             Debug.Log("ゲームBGM");
@@ -44,7 +44,7 @@ public class AudioManager : MonoBehaviour
         }
 
         //クレジット画面になったらクレジット時のBGMを流す
-        if(GameManager.instance._gameMode == GameManager.GameMode.Credit && !_goCredit)
+        if(GameManager.Instance._gameMode == GameManager.GameMode.Credit && !_goCredit)
         {
             _goCredit = true;
             Debug.Log("クレジットBGM");
@@ -52,7 +52,7 @@ public class AudioManager : MonoBehaviour
         }
 
         //ゲームが終わるか、リタイアしたらBGMを止める
-        if(GameManager.instance._gameMode == GameManager.GameMode.GameClear || GameManager.instance._gameMode == GameManager.GameMode.GameOver || _retire.IsClicked)
+        if(GameManager.Instance._gameMode == GameManager.GameMode.GameClear || GameManager.Instance._gameMode == GameManager.GameMode.GameOver || _retire.IsClicked)
         {
             _sounds[1].Stop();
         }

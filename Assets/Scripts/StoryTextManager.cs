@@ -43,13 +43,13 @@ public class StoryTextManager : MonoBehaviour
     {
 
         //なにかストーリーを流してる時にクリックしたら、一気に最後まで行く
-        if(Input.GetKeyDown(KeyCode.Mouse0) && (GameManager.instance._gameMode == GameManager.GameMode.Opening || GameManager.instance._gameMode == GameManager.GameMode.GameClear || GameManager.instance._gameMode == GameManager.GameMode.GameOver || GameManager.instance._gameMode == GameManager.GameMode.Credit))
+        if(Input.GetKeyDown(KeyCode.Mouse0) && (GameManager.Instance._gameMode == GameManager.GameMode.Opening || GameManager.Instance._gameMode == GameManager.GameMode.GameClear || GameManager.Instance._gameMode == GameManager.GameMode.GameOver || GameManager.Instance._gameMode == GameManager.GameMode.Credit))
         {
             _storyText.DOComplete();
         }
 
         //-----クレジット関係-----
-        if (GameManager.instance._gameMode == GameManager.GameMode.Credit && !_goCredit)
+        if (GameManager.Instance._gameMode == GameManager.GameMode.Credit && !_goCredit)
         {
             Debug.Log("クレジット");
             _goCredit = true;
@@ -58,7 +58,7 @@ public class StoryTextManager : MonoBehaviour
         }
 
         //ゲームが始まったらオープニングストーリーを表示
-        if (GameManager.instance._gameMode == GameManager.GameMode.Opening)
+        if (GameManager.Instance._gameMode == GameManager.GameMode.Opening)
         {
 
             if (!_endStartStory)
@@ -76,13 +76,13 @@ public class StoryTextManager : MonoBehaviour
             {
                 //話が終わったらゲームに移行
                 _storyPanel.GetComponent<Image>().DOFade(0, 2.0f).SetEase(Ease.Linear).OnComplete(() => _storyPanel.SetActive(false)).SetAutoKill();
-                GameManager.instance._gameMode = GameManager.GameMode.PlayGame;
+                GameManager.Instance._gameMode = GameManager.GameMode.PlayGame;
             }
 
         }
 
         //ゲームクリアしたらクリアストーリーを表示
-        if (GameManager.instance._gameMode == GameManager.GameMode.GameClear)
+        if (GameManager.Instance._gameMode == GameManager.GameMode.GameClear)
         {
 
             //エンディング表示
@@ -95,7 +95,7 @@ public class StoryTextManager : MonoBehaviour
         }
 
         //時間切れになったらバッドエンドストーリーを表示
-        if (GameManager.instance._gameMode == GameManager.GameMode.GameOver)
+        if (GameManager.Instance._gameMode == GameManager.GameMode.GameOver)
         {
 
             //バッドエンド表示

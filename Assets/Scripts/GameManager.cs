@@ -8,7 +8,7 @@ using System.Linq;
 /// <summary>ゲームマネージャー！！！！！！！！！</summary>
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance;
 
     [SerializeField, Header("制限時間")] float _timeLimit = 600f;
     [Tooltip("制限時間表示用 1秒カウントさせる")] float _second = 1.0f;
@@ -90,9 +90,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
