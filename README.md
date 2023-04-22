@@ -18,7 +18,7 @@
 
 まだ遊んでないよ！という方や、クリアまでいけなかった...という方にも最後まで遊んでいただくため、Unityroomにゲームを投稿してみました。ぜひ遊んでください。
 
-[とある部屋からの脱出](https://unityroom.com/games/sinnsakai02_nazotoki)
+こちらから:[とある部屋からの脱出](https://unityroom.com/games/sinnsakai02_nazotoki)
 
 ### 考察
 
